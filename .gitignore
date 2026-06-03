@@ -1,0 +1,32 @@
+# Data — never commit institutional WRDS/CRSP/TAQ data
+data/
+*.parquet
+*.csv
+*.h5
+*.feather
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Notebooks output / scratch
+scratch/
+outputs/
+*.pdf
+
+# Secrets / credentials (WRDS, etc.)
+.env
+.env.*
+*.pgpass
+wrds_credentials*
+
+# OS
+.DS_Store
