@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cllm"
+version = "0.1.0"
+description = "Curvature Lead-Lag Model: weighted augmented directed Forman-Ricci curvature on factor-residualized lead-lag networks for structurally-distinct pair selection (UCLA Math 285J / ICAIF 2026)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Ivan Sit" }]
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "pandas>=2.0",
+    "networkx>=3.0",
+    "scikit-learn>=1.3",
+    "statsmodels>=0.14",
+    "pyarrow>=12.0",
+    "matplotlib>=3.7",
+]
+
+[project.optional-dependencies]
+# Real WRDS data pull (institutional). Not needed for synthetic end-to-end runs.
+wrds = ["wrds>=3.1"]
+# Free daily data fallback for development without WRDS.
+freedata = ["yfinance>=0.2"]
+dev = ["pytest>=7.0", "pytest-cov>=4.0", "ruff>=0.1"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
