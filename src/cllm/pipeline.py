@@ -83,6 +83,8 @@ def run_pipeline(bundle: DataBundle, config: PipelineConfig | None = None) -> Pi
     cfg = config or PipelineConfig()
     notes: list[str] = []
     returns, sectors = bundle.returns, bundle.sectors
+    if sectors is not None and sectors.isna().any():
+        sectors = sectors.fillna("OTHER")  # unmapped names get a catch-all sector
 
     # time-ordered split (lock selection on validate, evaluate once on test)
     tr, va, te = train_val_test_split(len(returns), cfg.split)
