@@ -25,7 +25,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import adjusted_rand_score
 
-from .curvature import triangle_count
+from .curvature import triangle_counts_all
 from .linegraph import afrc_communities, curvature_gap
 from .network import build_lead_lag_graph
 from .synthetic import planted_directed_sbm
@@ -132,7 +132,7 @@ def triangle_density(
     """
     UG = G.to_undirected() if G.is_directed() else G
     n_edges = G.number_of_edges()
-    ms = [triangle_count(G, u, v, mode=triangle_mode) for u, v in G.edges()]
+    ms = list(triangle_counts_all(G, mode=triangle_mode).values())
     ms_arr = np.asarray(ms, dtype=float) if ms else np.array([0.0])
 
     tri_per_node = nx.triangles(UG)

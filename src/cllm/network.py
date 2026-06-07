@@ -72,7 +72,10 @@ def signed_lead_lag(returns: pd.DataFrame, lags: tuple[int, ...] = (1, 2, 3, 5))
     signed = {}
     for lag in lags:
         C = lagged_cross_correlation(returns, lag)
-        signed[lag] = C - C.T  # antisymmetric
+        # NaN correlations (from missing returns / zero-variance windows) carry no
+        # directional information -> treat as 0 so they become non-edges, not a
+        # poisoned quantile that fails to sparsify the graph.
+        signed[lag] = np.nan_to_num(C - C.T, nan=0.0)  # antisymmetric
 
     W = np.zeros((N, N))
     best_lag = np.zeros((N, N), dtype=int)
@@ -119,7 +122,7 @@ def build_lead_lag_graph(
     mags = np.abs(W[iu, ju])
 
     if sparsify == "quantile":
-        cut = np.quantile(mags, threshold) if mags.size else 0.0
+        cut = np.nanquantile(mags, threshold) if mags.size else 0.0
     elif sparsify == "absolute":
         cut = threshold
     elif sparsify == "none":
@@ -135,7 +138,7 @@ def build_lead_lag_graph(
     G.graph["cutoff"] = float(cut)
     for i, j in zip(iu, ju):
         w = W[i, j]
-        if abs(w) <= cut or abs(w) == 0.0:
+        if not np.isfinite(w) or abs(w) <= cut or abs(w) == 0.0:
             continue
         if w > 0:
             src, dst = tickers[i], tickers[j]

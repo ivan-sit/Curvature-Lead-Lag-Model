@@ -54,6 +54,9 @@ class PipelineConfig:
     selection_k: int = 15
     split: tuple[float, float, float] = (0.6, 0.2, 0.2)
     null_iters: int = 100
+    with_ollivier: bool = True               # per-edge OT LP — disable for large universes
+    max_coint_candidates: int = 3000         # cap Engle-Granger tests (O(N^2) otherwise)
+    compute_linegraph: bool = True           # build L(G)+AFRC flow — disable for large universes
     seed: int = 0
 
 
@@ -108,13 +111,21 @@ def run_pipeline(bundle: DataBundle, config: PipelineConfig | None = None) -> Pi
         notes.append("KILL-SWITCH B: triangle-sparse -> AFRC augmentation degenerate (escalate)")
 
     # 4) four curvature objects
-    curv = compute_all_objects(G, triangle_mode=cfg.triangle_mode, with_ollivier=True)
+    curv = compute_all_objects(G, triangle_mode=cfg.triangle_mode, with_ollivier=cfg.with_ollivier)
 
-    # 5) line graph + AFRC communities + curvature gap
-    LG = line_graph(G)
-    lg_comms = afrc_communities(LG, iterative=True) if LG.number_of_edges() else {}
-    comm_labels = sectors.to_dict() if sectors is not None else afrc_communities(G, iterative=True)
+    # 5) communities for the curvature gap: GICS sectors when available, else AFRC
+    #    on G. The line graph L(G) + its AFRC flow (the §5 pair-space view) is
+    #    expensive at scale, so it is opt-in via cfg.compute_linegraph.
+    if sectors is not None:
+        comm_labels = sectors.to_dict()
+    else:
+        comm_labels = afrc_communities(G, iterative=True)
     gap = curvature_gap(G, comm_labels, triangle_mode=cfg.triangle_mode)
+    if cfg.compute_linegraph:
+        LG = line_graph(G)
+        lg_comms = afrc_communities(LG, iterative=True) if LG.number_of_edges() else {}
+        notes.append(f"L(G): {LG.number_of_nodes()} nodes, "
+                     f"{len(set(lg_comms.values()))} pair-communities")
 
     # 6) structural validation cascade
     abs_corr = _abs_corr_per_edge(r_resid, list(G.edges()))
@@ -144,10 +155,8 @@ def run_pipeline(bundle: DataBundle, config: PipelineConfig | None = None) -> Pi
     tickers = list(returns.columns)
     candidates = [(tickers[i], tickers[j]) for i in range(len(tickers)) for j in range(i + 1, len(tickers))]
 
-    curv_pairs = select_top_edges(curv.assign(lag=[G[u][v]["lag"] for u, v in curv.index]),
-                                  cfg.curvature_column, cfg.selection_k, ascending=True)
-    oll_pairs = select_top_edges(curv.assign(lag=[G[u][v]["lag"] for u, v in curv.index]),
-                                 "ollivier", cfg.selection_k, ascending=True)
+    curv_with_lag = curv.assign(lag=[G[u][v]["lag"] for u, v in curv.index])
+    curv_pairs = select_top_edges(curv_with_lag, cfg.curvature_column, cfg.selection_k, ascending=True)
     # undirected Forman on the symmetrized graph
     undirected = forman_curvatures(G.to_undirected())
     undirected_df = pd.DataFrame({"F_und": undirected})
@@ -155,14 +164,24 @@ def run_pipeline(bundle: DataBundle, config: PipelineConfig | None = None) -> Pi
                             for u, v in undirected_df.index]
     und_pairs = select_top_edges(undirected_df, "F_und", cfg.selection_k, ascending=True)
 
+    # cap cointegration candidates (Engle-Granger is O(N^2)); sample deterministically
+    rng = np.random.default_rng(cfg.seed)
+    if len(candidates) > cfg.max_coint_candidates:
+        idx = rng.choice(len(candidates), size=cfg.max_coint_candidates, replace=False)
+        coint_cands = [candidates[i] for i in idx]
+    else:
+        coint_cands = candidates
+
     method_pairs = {
         "curvature(aug,directed)": curv_pairs,
         "undirected_forman": und_pairs,
-        "ollivier": oll_pairs,
         "correlation": select_by_correlation(r_train, candidates, cfg.selection_k, cfg.lags),
-        "cointegration": select_by_cointegration(r_train, candidates, cfg.selection_k, cfg.lags),
+        "cointegration": select_by_cointegration(r_train, coint_cands, cfg.selection_k, cfg.lags),
         "random": select_random(candidates, cfg.selection_k, r_train, cfg.lags, seed=cfg.seed),
     }
+    if cfg.with_ollivier and "ollivier" in curv.columns and curv["ollivier"].notna().any():
+        method_pairs["ollivier"] = select_top_edges(curv_with_lag, "ollivier",
+                                                     cfg.selection_k, ascending=True)
 
     rows = []
     for name, pairs in method_pairs.items():

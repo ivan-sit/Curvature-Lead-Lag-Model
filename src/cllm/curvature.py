@@ -164,6 +164,25 @@ def triangle_count(
     raise ValueError(f"unknown triangle mode: {mode!r}")
 
 
+def triangle_counts_all(
+    G: nx.Graph | nx.DiGraph, mode: TriangleMode = "common"
+) -> dict[tuple, int]:
+    """Triangle count for every edge, computing the undirected projection and the
+    per-node neighbour sets ONCE (vastly faster than calling ``triangle_count`` in
+    a loop, which rebuilds the projection per edge)."""
+    if mode == "common":
+        UG = G.to_undirected() if G.is_directed() else G
+        nbrs = {n: set(UG[n]) for n in UG}
+        return {(u, v): len((nbrs[u] & nbrs[v]) - {u, v}) for u, v in G.edges()}
+    if mode == "cyclic":
+        if not G.is_directed():
+            raise ValueError("cyclic triangles require a directed graph")
+        succ = {n: set(G.successors(n)) for n in G}
+        pred = {n: set(G.predecessors(n)) for n in G}
+        return {(u, v): len((succ[v] & pred[u]) - {u, v}) for u, v in G.edges()}
+    raise ValueError(f"unknown triangle mode: {mode!r}")
+
+
 def augmented_forman_curvatures(
     G: nx.Graph | nx.DiGraph,
     weight: str = "weight",
@@ -174,10 +193,8 @@ def augmented_forman_curvatures(
     """Augmented Forman ``F#(e) = F(e) + 3 m(e)`` for every edge (Samal Eq. 10,
     triangles only per Serrano de Haro Iváñez 2022)."""
     base = forman_curvatures(G, weight, vertex_weight, flow)
-    return {
-        (u, v): base[(u, v)] + 3 * triangle_count(G, u, v, triangle_mode)
-        for u, v in G.edges()
-    }
+    tri = triangle_counts_all(G, triangle_mode)
+    return {(u, v): base[(u, v)] + 3 * tri[(u, v)] for u, v in G.edges()}
 
 
 # --------------------------------------------------------------------------- #
@@ -284,10 +301,11 @@ def compute_all_objects(
     f_plain = forman_curvatures(H, weight="weight", vertex_weight=1.0, flow=flow)
 
     f_w = forman_curvatures(G, weight=weight, vertex_weight=1.0, flow=flow)
+    tri = triangle_counts_all(G, triangle_mode)
     rows = []
     oll = ollivier_ricci_curvatures(G, weight=weight) if with_ollivier else {}
     for u, v in G.edges():
-        m = triangle_count(G, u, v, triangle_mode)
+        m = tri[(u, v)]
         rows.append(
             {
                 "source": u,
