@@ -19,13 +19,10 @@ from cllm.data import DataBundle
 from cllm.diagnostics import kill_switch_b
 from cllm.pipeline import PipelineConfig, run_pipeline
 
-BASE = "/Users/ivansit/Desktop/Geopolitical-Alpha/US_CRSP_NYSE"
-
 
 def _sector_map() -> pd.Series:
-    s1500 = pd.read_csv(f"{BASE}/Sectors/Sectors_SP1500.csv", header=None).set_index(2)[3]
-    s500 = pd.read_csv(f"{BASE}/Sectors/Sectors_SP500_YahooNWikipedia.csv").set_index("Ticker")["Sector_Wikipedia"]
-    return s1500.combine_first(s500)
+    # 100% Wharton: ticker -> GICS sector from Compustat (data/ticker_sectors_wrds.parquet)
+    return pd.read_parquet("data/ticker_sectors_wrds.parquet")["gsector"].astype(str)
 
 
 def main() -> None:
