@@ -467,8 +467,8 @@ def build():
          ["Universe", "~155 large-caps", "S&P 500 (point-in-time)"],
          ["Window", "full-year 2019", "2000–2024"]],
         lead="The same method, run at two horizons — no weekly or monthly.",
-        note="Intraday is where lead-lag is strongest, so it carries the headline; "
-             "daily is the robustness check.",
+        note="Coverage: daily spans the full 2000–2024; intraday is 2019 only (25 yrs of 30-min "
+             "TAQ ≈ 100+ h of pulls), so it serves as the high-frequency cross-check.",
         col_widths=[Inches(2.9), Inches(4.5), Inches(4.2)],
         align=["l", "c", "c"],
         highlight_rows=(1,),
@@ -477,31 +477,31 @@ def build():
     # 12 — section: results
     section_slide(prs, nx(), "RESULTS", "Two hypotheses, two answers.")
 
-    # 12 — result 1
+    # 13 — H1 result 1: distinctness (BOTH horizons)
     table_slide(
-        prs, nx(), "Results", "Curvature is not correlation",
-        ["Test", "Value", "What it means"],
-        [["Top-K Jaccard vs correlation", "≈ 0.0", "the two methods pick almost no pairs in common"],
-         ["Spearman(F, |ρ|)", "0.18", "curvature rank barely tracks correlation (≪ 0.8)"]],
-        lead="The pairs curvature flags are not the pairs correlation flags.",
-        note="Significance: curvature is not a re-skin of correlation — it surfaces genuinely "
-             "different structure. This distinctness IS the headline result.",
-        col_widths=[Inches(4.4), Inches(1.9), Inches(5.3)],
-        align=["l", "c", "l"],
+        prs, nx(), "Results — H1", "Curvature is not correlation",
+        ["Test", "Intraday\n2019", "Daily\n2000–24", "What it means"],
+        [["Top-K Jaccard vs correlation", "≈ 0.0", "0.0", "near-disjoint pair sets"],
+         ["Spearman(F, |ρ|)", "0.18", "0.07", "barely tracks |ρ|  (≪ 0.8)"]],
+        lead="The pairs curvature flags are not the pairs correlation flags — at both horizons.",
+        note="Significance: curvature is not a re-skin of correlation. Holds on the 2019 intraday "
+             "graph AND the full 2000–2024 daily span. This distinctness IS the headline result.",
+        col_widths=[Inches(3.7), Inches(1.9), Inches(2.0), Inches(4.0)],
+        align=["l", "c", "c", "l"],
         highlight_rows=(0, 1),
     )
 
-    # 13 — result 2
+    # 14 — H1 result 2: degree ablation (BOTH horizons)
     table_slide(
-        prs, nx(), "Results", "A clean degree ablation",
-        ["Object", "R² on degree", "What it means"],
-        [["Plain Forman", "1.00", "100% explained by degree — pure baseline, by design"],
-         ["Augmented Forman", "0.56", "~44% is NOT degree → genuinely higher-order signal"]],
-        lead="Does the curvature carry anything beyond node connectivity?",
-        note="Significance: plain Forman = pure degree (proves the test is calibrated); the "
-             "augmented object adds real higher-order structure the +3m triangle term captures.",
-        col_widths=[Inches(3.8), Inches(2.4), Inches(5.4)],
-        align=["l", "c", "l"],
+        prs, nx(), "Results — H1", "A clean degree ablation",
+        ["Object  (R² on degree)", "Intraday\n2019", "Daily\n2000–24", "What it means"],
+        [["Plain Forman", "1.00", "1.00", "100% degree — pure baseline, by design"],
+         ["Augmented Forman", "0.56", "0.18", "44–82% is NOT degree → higher-order signal"]],
+        lead="Does curvature carry anything beyond connectivity? — checked at both horizons.",
+        note="Significance: plain Forman = pure degree (calibration ✓); the augmented object adds "
+             "real higher-order structure at both horizons — even more on daily (~82% non-degree).",
+        col_widths=[Inches(3.7), Inches(1.9), Inches(2.0), Inches(4.0)],
+        align=["l", "c", "c", "l"],
         highlight_rows=(1,),
     )
 
@@ -516,20 +516,20 @@ def build():
         lead="A finding, not a bug.",
     )
 
-    # 15 — H2 result: the predictive test (IC)
+    # 15 — H2 result: the predictive test (IC), BOTH horizons
     table_slide(
-        prs, nx(), "Results — H2", "The predictive test",
-        ["Method", "Mean IC", "95% CI"],
-        [["Undirected Forman", "+0.013", "[−0.016, +0.040]"],
-         ["Curvature (aug, directed)", "+0.005", "[−0.016, +0.026]"],
-         ["Correlation", "−0.003", "[−0.027, +0.024]"],
-         ["Random", "−0.015", "[−0.031, +0.006]"]],
-        lead="Out-of-sample directional IC — full-year 2019, within-day horizon.",
-        note="Forman leads every baseline — but every CI spans zero, and undirected ties "
-             "directed. No significant predictive edge.",
-        col_widths=[Inches(4.8), Inches(2.6), Inches(4.2)],
+        prs, nx(), "Results — H2", "The predictive test — both horizons",
+        ["Method  (mean OOS IC)", "Intraday 30-min\n2019", "Daily close-to-close\n2000–2024"],
+        [["Curvature (aug, directed)", "+0.005", "−0.011  (CI < 0)"],
+         ["Undirected Forman", "+0.013", "+0.002"],
+         ["Correlation", "−0.003", "+0.023  (CI > 0)"],
+         ["Random", "−0.015", "+0.007"]],
+        lead="Tested at both horizons — intraday (2019) and daily (25-yr walk-forward).",
+        note="Intraday: Forman leads but every CI spans zero. Daily (21 windows): curvature "
+             "is significantly NEGATIVE and correlation does best. No predictive edge for curvature.",
+        col_widths=[Inches(4.6), Inches(3.3), Inches(3.7)],
         align=["l", "c", "c"],
-        highlight_rows=(0, 1),
+        highlight_rows=(0,),
     )
 
     # 16 — verdict: respond to BOTH hypotheses
@@ -538,18 +538,18 @@ def build():
         left={
             "label": "H1 — Structural distinctness", "color": GREEN, "pale": PALE_G,
             "verdict": "✓  CONFIRMED",
-            "points": ["Jaccard ≈ 0, Spearman 0.18 vs correlation",
-                       "augmented Forman: ~44% non-degree signal",
-                       "curvature finds structure others miss"],
+            "points": ["Jaccard 0, Spearman 0.07–0.18 vs correlation",
+                       "augmented Forman: 44–82% non-degree signal",
+                       "robust across 2019 intraday & 25-yr daily"],
         },
         right={
             "label": "H2 — Predictive edge", "color": AMBER, "pale": PALE_A,
             "verdict": "✗  NOT SUPPORTED",
-            "points": ["Forman leads on OOS IC, but every CI spans zero",
-                       "undirected ties directed — no edge from direction",
-                       "an honest null; the claim rests on H1"],
+            "points": ["Intraday 2019: Forman leads, but CIs span zero",
+                       "Daily 25-yr: curvature negative, correlation best",
+                       "no predictive edge; the claim rests on H1"],
         },
-        lead="The paper stands on H1. H2 is reported transparently.",
+        lead="The paper stands on H1. H2 is reported transparently — across 25 years.",
     )
 
     # 17 — outlook

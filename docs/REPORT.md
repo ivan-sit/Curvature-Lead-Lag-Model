@@ -154,26 +154,36 @@ Ollivier baselines on identical settings.
 All data is institutional via UCLA WRDS. **CRSP** daily S&P 500 returns (2000–2024,
 survivorship-correct via point-in-time membership and delisting adjustment); **Compustat** GICS
 sector classifications (for residualization and community-boundary tests); **TAQ** Monthly 30-min
-intraday bars. The headline analysis uses **full-year 2019 intraday** (≈155 liquid large-caps
-across all 11 GICS sectors, 3024 thirty-minute bars), where lead-lag is strongest; daily CRSP is a
-robustness check. Networks are built on factor-residualized returns throughout.
+intraday bars. Networks are built on factor-residualized returns throughout.
+
+**Coverage (explicit).** The **daily** analysis — both the structural cascade and the predictive
+walk-forward — spans the **full 2000–2024** (6,289 trading days, ~1,069 names with point-in-time
+membership; ~400 names continuously present per 4-year window). The **intraday 30-min** analysis
+covers **2019 only** (≈155 liquid large-caps, 3,024 bars): pulling 30-min TAQ across 25 years
+would be ~100+ hours of WRDS queries, so intraday serves as a **high-frequency cross-check**, not
+a 25-year panel. Where lead-lag is strongest is intraday; where coverage is broadest is daily —
+we report both.
 
 ## 6. Results
 
+All structural metrics below are reported at **both horizons** — the 2019 intraday graph and the
+full **2000–2024 daily** span (averaged across the walk-forward windows).
+
 ### 6.1 Curvature is not a re-skin of correlation
-- **Top-K Jaccard (curvature vs correlation) ≈ 0.0** — the two methods select almost entirely
-  disjoint pairs.
-- **Spearman(`F`, `|ρ|`) ≈ 0.18** (≪ 0.8) — curvature rank is only weakly related to correlation
-  magnitude.
+- **Top-K Jaccard (curvature vs correlation) = 0.0** at both horizons — the two methods select
+  almost entirely disjoint pairs.
+- **Spearman(`F`, `|ρ|`)** = 0.18 (intraday 2019) and 0.07 (daily 2000–2024), both ≪ 0.8 — curvature
+  rank is only weakly related to correlation magnitude, and even less so on the long daily span.
 
 The pairs curvature flags as structurally isolated are *not* the pairs correlation flags as
-strongly co-moving. This is the central structural finding.
+strongly co-moving. This is the central structural finding, and it is robust across 25 years.
 
 ### 6.2 A clean degree ablation
-- **Plain Forman R² = 1.0** on `(deg_in, deg_out)` — the exact degree identity, confirming the
-  cascade is correctly calibrated and that plain Forman is rightly treated as a baseline.
-- **Augmented Forman R² ≈ 0.56** on degree + `|ρ|` — ≈ 44% of its variation is **not** explained
-  by degree or correlation. The triangle term `3m` injects genuine higher-order structure.
+- **Plain Forman R² = 1.0** on `(deg_in, deg_out)` at both horizons — the exact degree identity,
+  confirming the cascade is calibrated and that plain Forman is rightly a baseline.
+- **Augmented Forman R²** = 0.56 (intraday 2019) and 0.18 (daily 2000–2024) on degree + `|ρ|` —
+  i.e. **44%–82%** of its variation is **not** explained by degree or correlation (more on daily).
+  The triangle term `3m` injects genuine higher-order structure at both horizons.
 
 ### 6.3 The lead-lag network is triangle-sparse
 The kill-switch B diagnostic flags the network as **triangle-sparse** at every sparsification
@@ -197,12 +207,24 @@ Out-of-sample directional IC (full-year 2019, within-day-only horizon, k = 20 pa
 | Cointegration | −0.009 | [−0.026, +0.007] |
 | Random | −0.015 | [−0.031, +0.006] |
 
-The Forman family leads every baseline (and in the within-day horizon every non-Forman baseline
-is negative) — but **no confidence interval excludes zero**, the ranking **flips across
-subsamples** (a 47-name half-year had curvature > correlation; an 8-month run had correlation >
-curvature ≈ random), and **undirected Forman ties the directed version**. We therefore claim
-**no significant predictive edge**, and in particular none attributable to *directedness*. We do
-not tune universes, windows, or `k` to manufacture significance.
+The Forman family leads every baseline here, but **no confidence interval excludes zero**, the
+ranking **flips across subsamples**, and **undirected Forman ties the directed version**.
+
+**Daily, 2000–2024 (walk-forward, 21 windows, close-to-close, k = 20).** The longer span is even
+more decisive against H2. Mean OOS IC across windows:
+
+| Method | Mean IC | 95% CI | windows > 0 |
+|---|---:|---|---:|
+| Correlation | **+0.023** | [+0.006, +0.040] | 76% |
+| Random | +0.007 | [−0.004, +0.017] | 67% |
+| Undirected Forman | +0.002 | [−0.005, +0.008] | 52% |
+| Curvature (aug, directed) | **−0.011** | [−0.020, −0.001] | 43% |
+
+Over 25 years of daily data, **curvature selection is significantly *negative*** (CI excludes zero)
+and **correlation does best** (CI excludes zero, positive). The intraday-2019 "Forman leads" does
+**not** replicate. **Verdict on H2: not supported** — there is no predictive edge for curvature,
+and on the long daily span it actively underperforms correlation. We do not tune universes,
+windows, or `k` to manufacture significance; the structural claim (H1) stands on its own.
 
 ## 7. Discussion and implications
 
