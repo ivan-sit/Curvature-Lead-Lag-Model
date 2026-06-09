@@ -348,11 +348,9 @@ def build():
         ["Residualize first: on raw returns, market + sector dominate the graph —",
          ("otherwise curvature just rediscovers GICS sectors (instructor requirement).", 1),
          "Edge weight = BCR signed lead-lag:  w(i→j) = ρ_ij(τ*) − ρ_ji(τ*).",
-         ("τ* = the lag of peak signal, picked per pair; intraday uses a within-day "
-          "estimator (no overnight gap).", 1)],
-        closer_label="Horizons tried",
-        closer="Daily: τ = 1–5 trading days   ·   Intraday: τ = 1–3 × 30-min bars "
-               "(30–90 min).   No weekly / monthly.",
+         ("τ* = the lag of peak signal, picked per pair; the candidate horizons are on "
+          "the next slide.", 1),
+         "Intraday: within-day estimator (lag pairs never cross the overnight gap)."],
     )
 
     # 8 — four objects (with plain-language "what it measures")
@@ -407,7 +405,23 @@ def build():
         highlight_rows=(2,),
     )
 
-    # 11 — section: structural results
+    # 11 — the two regimes / time horizons we ran
+    table_slide(
+        prs, nx(), "What I did", "Two regimes — two time horizons",
+        ["", "Intraday  (headline)", "Daily  (robustness)"],
+        [["Frequency", "30-min bars", "close-to-close daily"],
+         ["Lead-lag horizon  τ", "1–3 bars  =  30 / 60 / 90 min", "1–5 trading days"],
+         ["Universe", "~155 large-caps", "S&P 500 (point-in-time)"],
+         ["Window", "full-year 2019", "2000–2024"]],
+        lead="The same method, run at two horizons — no weekly or monthly.",
+        note="Intraday is where lead-lag is strongest, so it carries the headline; "
+             "daily is the robustness check.",
+        col_widths=[Inches(2.9), Inches(4.5), Inches(4.2)],
+        align=["l", "c", "c"],
+        highlight_rows=(1,),
+    )
+
+    # 12 — section: structural results
     section_slide(prs, nx(), "RESULTS", "The structural result holds.")
 
     # 12 — result 1
