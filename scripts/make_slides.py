@@ -14,6 +14,7 @@ from pathlib import Path
 
 from pptx import Presentation
 from pptx.dml.color import RGBColor
+from pptx.enum.shapes import MSO_SHAPE
 from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
 from pptx.util import Emu, Inches, Pt
 
@@ -196,6 +197,64 @@ def table_slide(prs, idx, section, title, headers, rows, note=None, lead=None,
     return s
 
 
+def _flowbox(slide, x, y, w, h, title, sub=None, accent=False):
+    shp = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, x, y, w, h)
+    shp.fill.solid(); shp.fill.fore_color.rgb = ACCENT if accent else PALE
+    shp.line.color.rgb = ACCENT; shp.line.width = Pt(1.25)
+    shp.shadow.inherit = False
+    tf = shp.text_frame; tf.word_wrap = True
+    tf.vertical_anchor = MSO_ANCHOR.MIDDLE
+    tf.margin_left = Inches(0.08); tf.margin_right = Inches(0.08)
+    tf.margin_top = Inches(0.03); tf.margin_bottom = Inches(0.03)
+    p = tf.paragraphs[0]; p.alignment = PP_ALIGN.CENTER
+    r = p.add_run(); r.text = title
+    _set(r, 14, WHITE if accent else INK, bold=True)
+    if sub:
+        p2 = tf.add_paragraph(); p2.alignment = PP_ALIGN.CENTER; p2.space_before = Pt(2)
+        r2 = p2.add_run(); r2.text = sub
+        _set(r2, 10, RGBColor(0xE5, 0xED, 0xFF) if accent else MUTE)
+
+
+def _arrow(slide, kind, x, y, w, h):
+    shp = slide.shapes.add_shape(kind, x, y, w, h)
+    shp.fill.solid(); shp.fill.fore_color.rgb = ACCENT
+    shp.line.fill.background(); shp.shadow.inherit = False
+
+
+def pipeline_slide(prs, idx, section, title, stages, lead=None):
+    """Six-stage pipeline as a snake flow chart (3 top L->R, 3 bottom R->L)."""
+    s = _blank(prs)
+    _, tf = _box(s, ML, TITLE_TOP, CW, Inches(0.9))
+    p = tf.paragraphs[0]
+    r = p.add_run(); r.text = title
+    _set(r, 30, INK, bold=True)
+    _rule(s, Inches(1.55))
+    if lead:
+        _, lf = _box(s, ML, Inches(1.75), CW, Inches(0.6))
+        rr = lf.paragraphs[0].add_run(); rr.text = lead
+        _set(rr, 18, ACCENT, italic=True)
+    bw, bh = Inches(3.3), Inches(1.1)
+    xs = [ML, Inches(4.6), Inches(8.35)]
+    ytop, ybot = Inches(2.55), Inches(4.75)
+    ah = Inches(0.34)
+    # top row, left -> right
+    for k in range(3):
+        _flowbox(s, xs[k], ytop, bw, bh, stages[k][0], stages[k][1])
+    _arrow(s, MSO_SHAPE.RIGHT_ARROW, Inches(4.18), ytop + Inches(0.38), Inches(0.42), ah)
+    _arrow(s, MSO_SHAPE.RIGHT_ARROW, Inches(7.93), ytop + Inches(0.38), Inches(0.42), ah)
+    # down on the right
+    _arrow(s, MSO_SHAPE.DOWN_ARROW, Inches(9.83), Inches(3.7), ah, Inches(1.0))
+    # bottom row, right -> left (so the flow continues 4 -> 5 -> 6)
+    bottom_x = [Inches(8.35), Inches(4.6), ML]
+    for k in range(3):
+        _flowbox(s, bottom_x[k], ybot, bw, bh, stages[3 + k][0], stages[3 + k][1],
+                 accent=(3 + k == 5))
+    _arrow(s, MSO_SHAPE.LEFT_ARROW, Inches(7.93), ybot + Inches(0.38), Inches(0.42), ah)
+    _arrow(s, MSO_SHAPE.LEFT_ARROW, Inches(4.18), ybot + Inches(0.38), Inches(0.42), ah)
+    _footer(s, idx, section)
+    return s
+
+
 def section_slide(prs, idx, kicker, big):
     s = _blank(prs)
     _rule(s, Inches(3.0), left=ML, width=Inches(1.8), color=ACCENT, h=Pt(4))
@@ -269,15 +328,16 @@ def build():
         lead="The claim is structural and falsifiable.",
     )
 
-    # 6 — what I did, overview
-    content_slide(
-        prs, nx(), "What I did", "An autonomous pipeline, six stages",
-        ["Residualize returns — remove market + sector first.",
-         "Build the directed lead-lag network (BCR signed statistic).",
-         "Compute four curvature objects.",
-         "Line graph L(G) + curvature-based pair-communities.",
-         "Structural validation cascade  →  curvature ≠ correlation / degree?",
-         "Select & report the structurally isolated pairs."],
+    # 6 — what I did, overview (flow chart)
+    pipeline_slide(
+        prs, nx(), "What I did", "The pipeline",
+        [("Residualize returns", "remove market + sector"),
+         ("Directed lead-lag network", "BCR signed statistic"),
+         ("Four curvature objects", "plain → weighted aug. directed"),
+         ("Line graph  L(G)", "curvature pair-communities"),
+         ("Validation cascade", "curvature ≠ corr / degree?"),
+         ("Structurally isolated pairs", "the structural output")],
+        lead="Six stages, fully automated.",
     )
 
     # 7 — residualized lead-lag
@@ -325,13 +385,21 @@ def build():
         lead="This cascade is the methodological core.",
     )
 
-    # 10 — data
-    content_slide(
+    # 10 — data (what each source is FOR)
+    table_slide(
         prs, nx(), "What I did", "Data — all institutional (WRDS)",
-        ["CRSP daily S&P 500, 2000–2024 — survivorship-correct, delisting-adjusted.",
-         "Compustat GICS sectors — residualization & community-boundary tests.",
-         "TAQ 30-min intraday — full-year 2019, ~155 large-caps (where lead-lag lives).",
-         "Every network is built on factor-residualized returns."],
+        ["Source", "What it is", "What it's for"],
+        [["CRSP", "daily S&P 500 returns, 2000–2024\n(survivorship-correct)",
+          "daily-frequency robustness check"],
+         ["Compustat", "GICS sector classifications",
+          "residualize returns; sector-boundary tests"],
+         ["TAQ", "30-min intraday bars, full-year 2019\n(~155 large-caps)",
+          "the HEADLINE network — where lead-lag lives"]],
+        lead="Every network is built on factor-residualized returns.",
+        note="Intraday is the main result; daily is the robustness check.",
+        col_widths=[Inches(2.0), Inches(5.4), Inches(4.2)],
+        align=["l", "l", "l"],
+        highlight_rows=(2,),
     )
 
     # 11 — section: structural results
@@ -340,24 +408,28 @@ def build():
     # 12 — result 1
     table_slide(
         prs, nx(), "Results", "Curvature is not correlation",
-        ["Test", "Value", "Reading"],
-        [["Top-K Jaccard vs correlation", "≈ 0.0", "near-disjoint pair sets"],
-         ["Spearman(F, |ρ|)", "0.18", "weak (≪ 0.8 threshold)"]],
+        ["Test", "Value", "What it means"],
+        [["Top-K Jaccard vs correlation", "≈ 0.0", "the two methods pick almost no pairs in common"],
+         ["Spearman(F, |ρ|)", "0.18", "curvature rank barely tracks correlation (≪ 0.8)"]],
         lead="The pairs curvature flags are not the pairs correlation flags.",
-        note="The directed graph carries lead-lag asymmetry the symmetric correlation graph cannot.",
-        col_widths=[Inches(5.0), Inches(2.4), Inches(4.2)],
+        note="Significance: curvature is not a re-skin of correlation — it surfaces genuinely "
+             "different structure. This distinctness IS the headline result.",
+        col_widths=[Inches(4.4), Inches(1.9), Inches(5.3)],
+        align=["l", "c", "l"],
         highlight_rows=(0, 1),
     )
 
     # 13 — result 2
     table_slide(
         prs, nx(), "Results", "A clean degree ablation",
-        ["Object", "R² on degree", "Reading"],
-        [["Plain Forman", "1.00", "exact degree identity (calibration ✓)"],
-         ["Augmented Forman", "0.56", "≈ 44% is NEW higher-order signal"]],
-        lead="The +3m triangle term is genuinely not explained by degree.",
-        note="Plain Forman is rightly a baseline; the augmented object earns its place.",
-        col_widths=[Inches(4.2), Inches(3.0), Inches(4.4)],
+        ["Object", "R² on degree", "What it means"],
+        [["Plain Forman", "1.00", "100% explained by degree — pure baseline, by design"],
+         ["Augmented Forman", "0.56", "~44% is NOT degree → genuinely higher-order signal"]],
+        lead="Does the curvature carry anything beyond node connectivity?",
+        note="Significance: plain Forman = pure degree (proves the test is calibrated); the "
+             "augmented object adds real higher-order structure the +3m triangle term captures.",
+        col_widths=[Inches(3.8), Inches(2.4), Inches(5.4)],
+        align=["l", "c", "l"],
         highlight_rows=(1,),
     )
 
@@ -384,14 +456,15 @@ def build():
          "structural-only is publishable)."],
     )
 
-    # 17 — next / thanks
+    # 17 — outlook
     content_slide(
-        prs, nx(), "Close", "Next steps & thanks",
-        ["Directed line-graph & directed AFRC-gap theory (possible Weber collaboration).",
-         "Multi-frequency replication and curvature dynamics through 2020 stress.",
-         "Write-up → 8-page ACM sigconf for ICAIF 2026.",
-         "Thanks to Prof. Mihai Cucuringu and the 285J group."],
-        lead="The paper stands on the structural result.",
+        prs, nx(), "Outlook", "Where this could go",
+        ["Maybe not lead-lag at all — apply the same directed-curvature tools to "
+         "other market graphs and relations.",
+         "Directed line-graph & directed AFRC-gap theory (open problems).",
+         "Multi-frequency replication; curvature dynamics through 2020 stress.",
+         "Write-up → 8-page ACM sigconf for ICAIF 2026."],
+        lead="The structural toolkit is not tied to one construction.",
     )
 
     out = Path("slides"); out.mkdir(exist_ok=True)
