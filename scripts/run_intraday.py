@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Run the pipeline on intraday TAQ 30-min returns (Phase-2: where lead-lag lives).
 
-Loads data/taq_intraday_2019H2.parquet (bar timestamps x tickers), maps tickers to
+Loads data/taq_intraday_2019.parquet (bar timestamps x tickers), maps tickers to
 GICS sectors, and runs the full pipeline with intraday lags (in 30-min bars).
 
-Caveat: lead-lag cross-correlation is computed on the concatenated intraday series;
-overnight bars are already dropped by the loader, so the only residual leakage is
-the day-boundary lag-1 pairing (minor). A within-day estimator is a refinement.
+Power upgrade vs. the H2-only first cut: ~150 names (triangle-richer graph, larger
+k) over full-year 2019 (tighter IC CIs), and a **within-day lead-lag estimator**
+(cfg.within_day=True) so lag pairs never straddle an overnight gap — the last
+source of day-boundary leakage is now removed.
 """
 
 from __future__ import annotations
@@ -27,7 +28,7 @@ def _sector_map() -> pd.Series:
 
 def main() -> None:
     t0 = time.time()
-    rets = pd.read_parquet("data/taq_intraday_2019H2.parquet")
+    rets = pd.read_parquet("data/taq_intraday_2019.parquet")
     rets = rets.dropna(axis=1, how="all").fillna(0.0)
     sectors = _sector_map().reindex(rets.columns).fillna("OTHER").astype(str)
     bundle = DataBundle(returns=rets, sectors=sectors)
@@ -41,15 +42,19 @@ def main() -> None:
 
     print("\n=== FULL PIPELINE (intraday) ===")
     cfg = PipelineConfig(
-        lags=(1, 2, 3), threshold=0.88, selection_k=10, null_iters=100,
-        with_ollivier=True, compute_linegraph=True, seed=0,
+        lags=(1, 2, 3), threshold=0.90, selection_k=20, null_iters=100,
+        with_ollivier=True, compute_linegraph=False, within_day=True,
+        afrc_max_removals=300, seed=0,
     )
     res = run_pipeline(bundle, cfg)
     for n in res.notes:
         print("  -", n)
     print("\n-- kill-switch B (pipeline graph) --\n  ", res.triangle)
     g = res.gap
-    print(f"\n-- curvature gap Δκ = {g['gap']:.3f}  intra={g['kappa_intra']:.2f} inter={g['kappa_inter']:.2f} --")
+    print(f"\n-- curvature gap Δκ (GICS) = {g['gap']:.3f}  intra={g['kappa_intra']:.2f} inter={g['kappa_inter']:.2f} --")
+    gd = res.gap_datadriven
+    print(f"-- curvature gap Δκ (data-driven) = {gd['gap']:.3f}  "
+          f"intra={gd['kappa_intra']:.2f} inter={gd['kappa_inter']:.2f} --")
     print("\n-- validation cascade --")
     for k, v in res.cascade.items():
         print(f"  {k}: {v}")

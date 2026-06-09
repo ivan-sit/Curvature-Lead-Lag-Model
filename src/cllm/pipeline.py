@@ -57,6 +57,8 @@ class PipelineConfig:
     with_ollivier: bool = True               # per-edge OT LP — disable for large universes
     max_coint_candidates: int = 3000         # cap Engle-Granger tests (O(N^2) otherwise)
     compute_linegraph: bool = True           # build L(G)+AFRC flow — disable for large universes
+    within_day: bool = False                 # intraday: pair lags only within a trading day
+    afrc_max_removals: int | None = None     # cap AFRC edge-removal flow (O(E^2)); None = unbounded
     seed: int = 0
 
 
@@ -68,6 +70,7 @@ class PipelineResult:
     triangle: object                       # TriangleDensityResult (kill-switch B)
     communities: dict
     gap: dict
+    gap_datadriven: dict
     cascade: dict
     selected_pairs: list
     ic_by_method: pd.DataFrame
@@ -88,8 +91,16 @@ def run_pipeline(bundle: DataBundle, config: PipelineConfig | None = None) -> Pi
 
     # time-ordered split (lock selection on validate, evaluate once on test)
     tr, va, te = train_val_test_split(len(returns), cfg.split)
-    r_train = returns.iloc[np.concatenate([tr, va])].reset_index(drop=True)
+    trva = np.concatenate([tr, va])
+    r_train = returns.iloc[trva].reset_index(drop=True)
     r_test = returns.iloc[te].reset_index(drop=True)
+
+    # within-day grouping for the intraday lead-lag estimator (drop overnight
+    # leakage): one trading-day label per train+val row, positionally aligned to
+    # r_resid (residualize preserves row order). None => global pairing.
+    groups = None
+    if cfg.within_day and isinstance(returns.index, pd.DatetimeIndex):
+        groups = returns.index[trva].normalize().to_numpy()
 
     # 1) residualize on train+val (factors estimated in-sample only)
     if sectors is not None and cfg.residualize_method == "market_sector":
@@ -100,7 +111,10 @@ def run_pipeline(bundle: DataBundle, config: PipelineConfig | None = None) -> Pi
             notes.append("no sectors provided -> market-only residualization")
 
     # 2) directed lead-lag graph on residual returns
-    G = build_lead_lag_graph(r_resid, lags=cfg.lags, sparsify=cfg.sparsify, threshold=cfg.threshold)
+    G = build_lead_lag_graph(r_resid, lags=cfg.lags, sparsify=cfg.sparsify,
+                             threshold=cfg.threshold, groups=groups)
+    if groups is not None:
+        notes.append(f"within-day lead-lag estimator: {len(set(map(str, groups)))} trading days")
     notes.append(f"graph: {G.number_of_nodes()} nodes, {G.number_of_edges()} edges")
     if G.number_of_edges() < 3:
         notes.append("WARNING: too few edges; loosen sparsification")
@@ -120,12 +134,22 @@ def run_pipeline(bundle: DataBundle, config: PipelineConfig | None = None) -> Pi
     #    expensive at scale, so it is opt-in via cfg.compute_linegraph.
     if sectors is not None:
         comm_labels = sectors.to_dict()
+        # data-driven partition for contrast (bounded so it stays affordable at scale)
+        dd_labels = afrc_communities(G, iterative=True, max_removals=cfg.afrc_max_removals)
     else:
-        comm_labels = afrc_communities(G, iterative=True)
+        comm_labels = afrc_communities(G, iterative=True, max_removals=cfg.afrc_max_removals)
+        dd_labels = comm_labels
     gap = curvature_gap(G, comm_labels, triangle_mode=cfg.triangle_mode)
+    # GICS sectors are not necessarily the natural curvature communities (we found
+    # Δκ small on sectors). Also report Δκ on a DATA-DRIVEN AFRC partition of G so
+    # the write-up can contrast "sectors" vs "what the curvature actually separates".
+    gap_datadriven = curvature_gap(G, dd_labels, triangle_mode=cfg.triangle_mode)
+    notes.append(f"data-driven communities: {len(set(dd_labels.values()))} "
+                 f"(Δκ={gap_datadriven['gap']:.3f} vs GICS Δκ={gap['gap']:.3f})")
     if cfg.compute_linegraph:
         LG = line_graph(G)
-        lg_comms = afrc_communities(LG, iterative=True) if LG.number_of_edges() else {}
+        lg_comms = (afrc_communities(LG, iterative=True, max_removals=cfg.afrc_max_removals)
+                    if LG.number_of_edges() else {})
         notes.append(f"L(G): {LG.number_of_nodes()} nodes, "
                      f"{len(set(lg_comms.values()))} pair-communities")
 
@@ -197,6 +221,6 @@ def run_pipeline(bundle: DataBundle, config: PipelineConfig | None = None) -> Pi
 
     return PipelineResult(
         config=cfg, graph=G, curvature=curv, triangle=tri, communities=comm_labels,
-        gap=gap, cascade=cascade, selected_pairs=curv_pairs, ic_by_method=ic_by_method,
-        notes=notes,
+        gap=gap, gap_datadriven=gap_datadriven, cascade=cascade,
+        selected_pairs=curv_pairs, ic_by_method=ic_by_method, notes=notes,
     )

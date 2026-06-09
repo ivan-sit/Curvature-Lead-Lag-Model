@@ -40,18 +40,40 @@ def _standardize(M: np.ndarray) -> np.ndarray:
     return (M - mu) / sd
 
 
-def lagged_cross_correlation(returns: pd.DataFrame, lag: int) -> np.ndarray:
+def lagged_cross_correlation(
+    returns: pd.DataFrame, lag: int, groups: np.ndarray | None = None
+) -> np.ndarray:
     """Cross-correlation matrix ``C[i,j] = corr(r_i[t], r_j[t+lag])`` for lag>=1.
 
     Past of asset i vs. future of asset j. ``C`` is generally non-symmetric;
     its antisymmetric part is the directional lead-lag signal.
+
+    ``groups`` (optional) is a length-T label per row (e.g. the trading day for
+    intraday bars). When supplied, only ``(t, t+lag)`` pairs that fall in the
+    **same group** are used — this removes overnight/day-boundary leakage for
+    intraday data (CLAUDE.md §9: overnight is macro-driven, not microstructural).
+    Series are z-scored over the full window, then the lagged cross-products are
+    pooled over the within-group pairs only.
     """
     if lag < 1:
         raise ValueError("lag must be >= 1 (contemporaneous corr carries no direction)")
     R = returns.to_numpy(dtype=float)
-    X = _standardize(R[:-lag])   # r_i[t]
-    Y = _standardize(R[lag:])    # r_j[t+lag]
+    if groups is None:
+        X = _standardize(R[:-lag])   # r_i[t]
+        Y = _standardize(R[lag:])    # r_j[t+lag]
+        n = X.shape[0]
+        return (X.T @ Y) / (n - 1)
+    # within-group: z-score the full series, then keep only same-day lag pairs
+    Z = _standardize(R)
+    g = np.asarray(groups)
+    if g.shape[0] != R.shape[0]:
+        raise ValueError("groups must have one label per return row")
+    mask = g[:-lag] == g[lag:]
+    X = Z[:-lag][mask]
+    Y = Z[lag:][mask]
     n = X.shape[0]
+    if n < 2:
+        return np.zeros((R.shape[1], R.shape[1]))
     return (X.T @ Y) / (n - 1)
 
 
@@ -64,14 +86,22 @@ class LeadLagEstimate:
     best_lag: np.ndarray   # (N,N) int, the tau* per pair (upper triangle filled)
 
 
-def signed_lead_lag(returns: pd.DataFrame, lags: tuple[int, ...] = (1, 2, 3, 5)) -> LeadLagEstimate:
-    """BCR signed lead-lag statistic, choosing tau* per pair by peak |statistic|."""
+def signed_lead_lag(
+    returns: pd.DataFrame,
+    lags: tuple[int, ...] = (1, 2, 3, 5),
+    groups: np.ndarray | None = None,
+) -> LeadLagEstimate:
+    """BCR signed lead-lag statistic, choosing tau* per pair by peak |statistic|.
+
+    ``groups`` (optional) restricts the lag pairing to within-group pairs — pass
+    the per-bar trading day for intraday data to drop overnight leakage.
+    """
     tickers = list(returns.columns)
     N = len(tickers)
     # signed statistic at each lag: S_l = C_l - C_l^T
     signed = {}
     for lag in lags:
-        C = lagged_cross_correlation(returns, lag)
+        C = lagged_cross_correlation(returns, lag, groups=groups)
         # NaN correlations (from missing returns / zero-variance windows) carry no
         # directional information -> treat as 0 so they become non-edges, not a
         # poisoned quantile that fails to sparsify the graph.
@@ -96,6 +126,7 @@ def build_lead_lag_graph(
     sparsify: str = "quantile",
     threshold: float = 0.9,
     min_abs: float = 0.0,
+    groups: np.ndarray | None = None,
 ) -> nx.DiGraph:
     """Build the sparsified directed lead-lag graph.
 
@@ -107,6 +138,8 @@ def build_lead_lag_graph(
     threshold : quantile in [0,1] (if ``"quantile"``) or absolute cutoff
         (if ``"absolute"``).
     min_abs : additional hard floor on ``|w|`` (drops near-zero edges).
+    groups : optional per-row group label (e.g. trading day) restricting the lag
+        pairing to within-group pairs — drops overnight leakage for intraday data.
 
     Each kept pair becomes a directed edge in the sign direction with::
 
@@ -114,7 +147,7 @@ def build_lead_lag_graph(
         signed = w            (the raw signed statistic)
         lag    = tau*
     """
-    est = signed_lead_lag(returns, lags)
+    est = signed_lead_lag(returns, lags, groups=groups)
     W, lag_mat, tickers = est.W, est.best_lag, est.tickers
     N = len(tickers)
 

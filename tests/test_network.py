@@ -43,6 +43,33 @@ def test_graph_recovers_planted_direction():
     assert recovered >= len(data.lead_lag_pairs) // 2
 
 
+def test_within_day_groups_drop_cross_day_pairs():
+    # 4 "days" of 10 bars; plant lead-lag only via WITHIN-day structure, then a
+    # spurious cross-day jump. Within-day estimator must ignore the cross-day pair.
+    data = factor_lead_lag_returns(n_assets=8, n_periods=40, n_lead_lag_pairs=2, seed=3)
+    groups = np.repeat(np.arange(4), 10)  # 4 days x 10 bars
+    C_all = lagged_cross_correlation(data.returns, lag=1)
+    C_wd = lagged_cross_correlation(data.returns, lag=1, groups=groups)
+    assert C_wd.shape == C_all.shape
+    assert np.isfinite(C_wd).all()
+    # within-day uses fewer pairs (36 vs 39) so the estimate differs
+    assert not np.allclose(C_all, C_wd)
+    # groups must align to the row count
+    import pytest
+    with pytest.raises(ValueError):
+        lagged_cross_correlation(data.returns, lag=1, groups=np.arange(5))
+
+
+def test_within_day_graph_builds_and_is_antisymmetric():
+    data = factor_lead_lag_returns(n_assets=12, n_periods=300, n_lead_lag_pairs=3, seed=7)
+    groups = np.repeat(np.arange(30), 10)  # 30 days x 10 bars
+    est = signed_lead_lag(data.returns, lags=(1, 2), groups=groups)
+    assert np.allclose(est.W, -est.W.T, atol=1e-12)
+    G = build_lead_lag_graph(data.returns, lags=(1, 2), sparsify="quantile",
+                             threshold=0.85, groups=groups)
+    assert G.number_of_nodes() == 12
+
+
 def test_walk_forward_windows_no_overlap_or_lookahead():
     wins = list(walk_forward_windows(1000, train=250, test=125))
     assert len(wins) > 0

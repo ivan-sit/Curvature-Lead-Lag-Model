@@ -1,5 +1,7 @@
 # Data — never commit institutional WRDS/CRSP/TAQ data
-data/
+# NOTE: anchor to repo root (/data/) so this does NOT also match the source
+# package src/cllm/data/ (which is code, not data).
+/data/
 *.parquet
 *.csv
 *.h5
@@ -32,3 +34,6 @@ wrds_credentials*
 .DS_Store
 
 US_CRSP_NYSE/
+
+# Claude Code local state (machine-specific)
+.claude/
