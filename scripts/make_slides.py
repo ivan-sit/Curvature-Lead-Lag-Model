@@ -25,6 +25,10 @@ ACCENT = RGBColor(0x25, 0x63, 0xEB)   # blue (rules, accents)
 MUTE = RGBColor(0x9C, 0xA3, 0xAF)     # light gray (footer)
 PALE = RGBColor(0xEF, 0xF2, 0xFB)     # pale blue (table zebra)
 WHITE = RGBColor(0xFF, 0xFF, 0xFF)
+GREEN = RGBColor(0x15, 0x9E, 0x5B)    # confirmed
+AMBER = RGBColor(0xD9, 0x77, 0x06)    # honest null / not supported
+PALE_G = RGBColor(0xEC, 0xFB, 0xF2)   # pale green panel
+PALE_A = RGBColor(0xFD, 0xF4, 0xE6)   # pale amber panel
 FONT = "Calibri"
 
 # ---- geometry (16:9) ------------------------------------------------------ #
@@ -257,6 +261,51 @@ def pipeline_slide(prs, idx, section, title, stages, lead=None):
     return s
 
 
+def verdict_slide(prs, idx, section, title, left, right, lead=None):
+    """Two-column hypothesis verdict. left/right = dict(label, verdict, color,
+    pale, points[list])."""
+    s = _blank(prs)
+    _, tf = _box(s, ML, TITLE_TOP, CW, Inches(0.9))
+    r = tf.paragraphs[0].add_run(); r.text = title
+    _set(r, 30, INK, bold=True)
+    _rule(s, Inches(1.55))
+    if lead:
+        _, lf = _box(s, ML, Inches(1.75), CW, Inches(0.5))
+        rr = lf.paragraphs[0].add_run(); rr.text = lead
+        _set(rr, 17, ACCENT, italic=True)
+    colw = Inches(5.55)
+    xs = [ML, Inches(6.9)]
+    top = Inches(2.45)
+    for col, x in zip((left, right), xs):
+        # header band
+        band = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, x, top, colw, Inches(0.7))
+        band.fill.solid(); band.fill.fore_color.rgb = col["color"]
+        band.line.fill.background(); band.shadow.inherit = False
+        btf = band.text_frame; btf.word_wrap = True
+        btf.vertical_anchor = MSO_ANCHOR.MIDDLE
+        bp = btf.paragraphs[0]; bp.alignment = PP_ALIGN.CENTER
+        br = bp.add_run(); br.text = col["label"]
+        _set(br, 16, WHITE, bold=True)
+        # body panel
+        panel = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, x, Inches(3.3),
+                                   colw, Inches(3.2))
+        panel.fill.solid(); panel.fill.fore_color.rgb = col["pale"]
+        panel.line.color.rgb = col["color"]; panel.line.width = Pt(1)
+        panel.shadow.inherit = False
+        ptf = panel.text_frame; ptf.word_wrap = True
+        ptf.margin_left = Inches(0.3); ptf.margin_right = Inches(0.3)
+        ptf.margin_top = Inches(0.25)
+        vp = ptf.paragraphs[0]
+        vr = vp.add_run(); vr.text = col["verdict"]
+        _set(vr, 22, col["color"], bold=True)
+        for pt in col["points"]:
+            pp = ptf.add_paragraph(); pp.space_before = Pt(10)
+            rr = pp.add_run(); rr.text = "•  " + pt
+            _set(rr, 15, BODY)
+    _footer(s, idx, section)
+    return s
+
+
 def section_slide(prs, idx, kicker, big):
     s = _blank(prs)
     _rule(s, Inches(3.0), left=ML, width=Inches(1.8), color=ACCENT, h=Pt(4))
@@ -319,15 +368,19 @@ def build():
                "structure the undirected correlation view cannot?",
     )
 
-    # 5 — hypothesis
-    content_slide(
-        prs, nx(), "Hypothesis", "The hypothesis",
-        ["Negatively-curved edges in the directed, factor-residualized lead-lag network "
-         "mark structurally isolated pairs —",
-         ("bridges between otherwise separated regions of the market —", 1),
-         ("that correlation-, degree-, and undirected-curvature methods do not recover.", 1),
-         "Lead-lag asymmetry encodes structure the symmetric correlation graph destroys."],
-        lead="The claim is structural and falsifiable.",
+    # 5 — two hypotheses
+    table_slide(
+        prs, nx(), "Hypothesis", "Two hypotheses",
+        ["H1 — Structural  (primary)", "H2 — Predictive  (secondary)"],
+        [["Negatively-curved pairs in the directed, residualized lead-lag network are "
+          "structurally distinct — bridges that correlation, degree, and undirected "
+          "curvature do not recover.",
+          "Those same pairs also carry out-of-sample directional information: today's "
+          "leader predicts tomorrow's lagger, beyond the baselines."]],
+        lead="Both falsifiable. The paper's claim rests on H1; H2 is exploratory.",
+        note="We answer both at the end.",
+        col_widths=[Inches(5.7), Inches(5.7)],
+        align=["l", "l"],
     )
 
     # 6 — what I did, overview (flow chart)
@@ -421,8 +474,8 @@ def build():
         highlight_rows=(1,),
     )
 
-    # 12 — section: structural results
-    section_slide(prs, nx(), "RESULTS", "The structural result holds.")
+    # 12 — section: results
+    section_slide(prs, nx(), "RESULTS", "Two hypotheses, two answers.")
 
     # 12 — result 1
     table_slide(
@@ -452,9 +505,9 @@ def build():
         highlight_rows=(1,),
     )
 
-    # 14 — result 3 triangle sparsity
+    # 14 — H1 result 3: triangle sparsity
     content_slide(
-        prs, nx(), "Results", "The network is triangle-sparse",
+        prs, nx(), "Results — H1", "The network is triangle-sparse",
         ["Most edges have few common-neighbor triangles; strict cyclic triangles ≈ 0.",
          "Only ~1% of triangles fall within a GICS sector.",
          "Two honest consequences:",
@@ -463,16 +516,40 @@ def build():
         lead="A finding, not a bug.",
     )
 
-    # 15 — implications
-    content_slide(
-        prs, nx(), "Implications", "What it means",
-        ["A new structural lens: directed, residualized curvature surfaces pair structure "
-         "correlation / degree / undirected methods miss.",
-         "Directedness changes the geometry — the directed graph is provably distinct "
-         "from its symmetrized version.",
-         "Triangle sparsity is a first-class constraint for curvature methods in finance.",
-         "This is a structural study — we make no predictive claim (Sandhu's precedent: "
-         "structural-only is publishable)."],
+    # 15 — H2 result: the predictive test (IC)
+    table_slide(
+        prs, nx(), "Results — H2", "The predictive test",
+        ["Method", "Mean IC", "95% CI"],
+        [["Undirected Forman", "+0.013", "[−0.016, +0.040]"],
+         ["Curvature (aug, directed)", "+0.005", "[−0.016, +0.026]"],
+         ["Correlation", "−0.003", "[−0.027, +0.024]"],
+         ["Random", "−0.015", "[−0.031, +0.006]"]],
+        lead="Out-of-sample directional IC — full-year 2019, within-day horizon.",
+        note="Forman leads every baseline — but every CI spans zero, and undirected ties "
+             "directed. No significant predictive edge.",
+        col_widths=[Inches(4.8), Inches(2.6), Inches(4.2)],
+        align=["l", "c", "c"],
+        highlight_rows=(0, 1),
+    )
+
+    # 16 — verdict: respond to BOTH hypotheses
+    verdict_slide(
+        prs, nx(), "Verdict", "Did the two hypotheses hold?",
+        left={
+            "label": "H1 — Structural distinctness", "color": GREEN, "pale": PALE_G,
+            "verdict": "✓  CONFIRMED",
+            "points": ["Jaccard ≈ 0, Spearman 0.18 vs correlation",
+                       "augmented Forman: ~44% non-degree signal",
+                       "curvature finds structure others miss"],
+        },
+        right={
+            "label": "H2 — Predictive edge", "color": AMBER, "pale": PALE_A,
+            "verdict": "✗  NOT SUPPORTED",
+            "points": ["Forman leads on OOS IC, but every CI spans zero",
+                       "undirected ties directed — no edge from direction",
+                       "an honest null; the claim rests on H1"],
+        },
+        lead="The paper stands on H1. H2 is reported transparently.",
     )
 
     # 17 — outlook
@@ -481,7 +558,8 @@ def build():
         ["Maybe not lead-lag at all — apply the same directed-curvature tools to "
          "other market graphs and relations.",
          "Directed line-graph & directed AFRC-gap theory (open problems).",
-         "Multi-frequency replication; curvature dynamics through 2020 stress.",
+         "A template for autonomous, agent-driven research in quant finance: an agent "
+         "ran the full loop — hypothesize, build, test, honestly reject.",
          "Write-up → 8-page ACM sigconf for ICAIF 2026."],
         lead="The structural toolkit is not tied to one construction.",
     )
