@@ -91,8 +91,12 @@ def title_slide(prs, title, subtitle, meta):
     return s
 
 
-def content_slide(prs, idx, section, title, bullets, lead=None):
-    """bullets: list of str (level 0) or (str, level) tuples."""
+def content_slide(prs, idx, section, title, bullets, lead=None, closer=None):
+    """bullets: list of str (level 0) or (str, level) tuples.
+
+    ``closer`` (optional): a highlighted call-out box near the bottom — used to
+    land a research question or a one-line punch.
+    """
     s = _blank(prs)
     _, tf = _box(s, ML, TITLE_TOP, CW, Inches(0.9))
     p = tf.paragraphs[0]
@@ -106,7 +110,7 @@ def content_slide(prs, idx, section, title, bullets, lead=None):
         rr = pp.add_run(); rr.text = lead
         _set(rr, 19, ACCENT, italic=True)
         top = Inches(2.75)
-    _, bf = _box(s, ML, top, CW, Inches(4.0))
+    _, bf = _box(s, ML, top, CW, Inches(3.0 if closer else 4.0))
     for i, b in enumerate(bullets):
         text, level = (b if isinstance(b, tuple) else (b, 0))
         p = bf.paragraphs[0] if i == 0 else bf.add_paragraph()
@@ -116,6 +120,21 @@ def content_slide(prs, idx, section, title, bullets, lead=None):
         r = p.add_run(); r.text = bullet + text
         _set(r, 21 if level == 0 else 18, BODY if level == 0 else MUTE,
              bold=False)
+    if closer:
+        from pptx.enum.shapes import MSO_SHAPE
+        box = s.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, ML, Inches(5.45),
+                                 CW, Inches(1.15))
+        box.fill.solid(); box.fill.fore_color.rgb = PALE
+        box.line.color.rgb = ACCENT; box.line.width = Pt(1.25)
+        box.shadow.inherit = False
+        ctf = box.text_frame; ctf.word_wrap = True
+        ctf.vertical_anchor = MSO_ANCHOR.MIDDLE
+        ctf.margin_left = Inches(0.25); ctf.margin_right = Inches(0.25)
+        cp = ctf.paragraphs[0]
+        lbl = cp.add_run(); lbl.text = "Research question   "
+        _set(lbl, 14, ACCENT, bold=True)
+        rr = cp.add_run(); rr.text = closer
+        _set(rr, 18, INK, bold=True)
     _footer(s, idx, section)
     return s
 
@@ -221,16 +240,15 @@ def build():
          "That raised the question this project asks."],
     )
 
-    # 4 — the gap
-    table_slide(
+    # 4 — the one opening -> research question
+    content_slide(
         prs, nx(), "Motivation", "The opening they left",
-        ["Sandhu et al. (2016)", "This work"],
-        [["Undirected correlation graph", "Directed lead-lag graph"],
-         ["Correlation edges", "BCR signed lead-lag, residualized"],
-         ["Ollivier-Ricci only", "Forman-Ricci (cheap, directed) + Ollivier"],
-         ["Structural validation only", "Structural cascade + (exploratory) test"]],
-        note="Markets have direction. The symmetric correlation matrix destroys it by construction.",
-        col_widths=[Inches(5.8), Inches(5.8)],
+        ["Sandhu et al. built the network on an undirected correlation graph.",
+         "But markets have direction — some names lead, others lag.",
+         ("The symmetric correlation graph erases that asymmetry by construction.", 1)],
+        lead="One thing their construction could not see: direction.",
+        closer="Does Ricci curvature on the directed, residualized lead-lag network reveal "
+               "structure the undirected correlation view cannot?",
     )
 
     # 5 — hypothesis
@@ -251,8 +269,8 @@ def build():
          "Build the directed lead-lag network (BCR signed statistic).",
          "Compute four curvature objects.",
          "Line graph L(G) + curvature-based pair-communities.",
-         "Structural validation cascade  →  curvature ≠ correlation/degree?",
-         "Exploratory: out-of-sample directional IC vs baselines."],
+         "Structural validation cascade  →  curvature ≠ correlation / degree?",
+         "Select & report the structurally isolated pairs."],
     )
 
     # 7 — residualized lead-lag
@@ -337,29 +355,16 @@ def build():
         lead="A finding, not a bug.",
     )
 
-    # 15 — predictive null
-    table_slide(
-        prs, nx(), "Results", "The predictive question — an honest null",
-        ["Method", "Mean IC", "95% CI"],
-        [["Undirected Forman", "+0.013", "[−0.016, +0.040]"],
-         ["Curvature (aug, directed)", "+0.005", "[−0.016, +0.026]"],
-         ["Correlation", "−0.003", "[−0.027, +0.024]"],
-         ["Random", "−0.015", "[−0.031, +0.006]"]],
-        lead="Out-of-sample directional IC (full-year 2019, within-day horizon).",
-        note="Forman leads — but every CI spans zero, ranking flips across samples, "
-             "and undirected ties directed. No significant predictive edge.",
-        col_widths=[Inches(5.0), Inches(2.6), Inches(4.0)],
-        highlight_rows=(0, 1),
-    )
-
-    # 16 — implications
+    # 15 — implications
     content_slide(
         prs, nx(), "Implications", "What it means",
-        ["A new structural lens: directed residualized curvature surfaces pair structure "
+        ["A new structural lens: directed, residualized curvature surfaces pair structure "
          "correlation / degree / undirected methods miss.",
-         "Directedness is structurally informative even where it is not predictive.",
+         "Directedness changes the geometry — the directed graph is provably distinct "
+         "from its symmetrized version.",
          "Triangle sparsity is a first-class constraint for curvature methods in finance.",
-         "An honest predictive null is a result — Sandhu's precedent: structural-only is publishable."],
+         "This is a structural study — we make no predictive claim (Sandhu's precedent: "
+         "structural-only is publishable)."],
     )
 
     # 17 — next / thanks
