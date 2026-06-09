@@ -70,6 +70,7 @@ def directional_ic(
     returns_train: pd.DataFrame,
     returns_test: pd.DataFrame,
     pairs: list[Pair],
+    groups: np.ndarray | None = None,
 ) -> ICResult:
     """Out-of-sample directional IC for a set of (leader, lagger, lag) pairs.
 
@@ -78,9 +79,15 @@ def directional_ic(
     return at ``t+lag`` is ``s * leader[t]`` and the IC is its Spearman rank
     correlation with the realized lagger return on the test window. We report the
     mean per-pair IC and a pooled IC over all (forecast, realized) observations.
+
+    ``groups`` (optional) is a per-test-row label (trading day for intraday data).
+    When given, the ``(t, t+lag)`` forecast/realized pairing is restricted to the
+    **same day** — a within-day-only prediction horizon that never bets a late-day
+    leader on the next morning's lagger across the overnight gap.
     """
     per_pair: dict = {}
     all_fore, all_real = [], []
+    g = np.asarray(groups) if groups is not None else None
     for leader, lagger, lag in pairs:
         if leader not in returns_train or lagger not in returns_train:
             continue
@@ -90,6 +97,9 @@ def directional_ic(
         s = s if s != 0 else 1.0
         fore = s * returns_test[leader].values[:-lag]
         real = returns_test[lagger].values[lag:]
+        if g is not None and g.shape[0] == returns_test.shape[0]:
+            m = g[:-lag] == g[lag:]
+            fore, real = fore[m], real[m]
         if len(fore) < 5:
             continue
         ic, _ = spearmanr(fore, real)
@@ -170,17 +180,24 @@ def block_bootstrap_ic(
     n_boot: int = 200,
     block: int = 20,
     seed: int | None = 0,
+    groups: np.ndarray | None = None,
 ) -> dict:
-    """Block-bootstrap the TEST window; return mean-IC distribution + 95% CI."""
+    """Block-bootstrap the TEST window; return mean-IC distribution + 95% CI.
+
+    ``groups`` (per-test-row day label) is resampled alongside the rows so the
+    within-day IC pairing is preserved under the bootstrap.
+    """
     rng = np.random.default_rng(seed)
     T = len(returns_test)
     n_blocks = int(np.ceil(T / block))
+    g = np.asarray(groups) if groups is not None else None
     vals = []
     for _ in range(n_boot):
         starts = rng.integers(0, max(1, T - block), size=n_blocks)
         idx = np.concatenate([np.arange(s, min(s + block, T)) for s in starts])[:T]
         boot = returns_test.iloc[idx].reset_index(drop=True)
-        vals.append(directional_ic(returns_train, boot, pairs).mean_ic)
+        boot_groups = g[idx] if g is not None else None
+        vals.append(directional_ic(returns_train, boot, pairs, groups=boot_groups).mean_ic)
     arr = np.asarray([v for v in vals if np.isfinite(v)], dtype=float)
     if arr.size == 0:
         return {"mean": float("nan"), "ci_low": float("nan"), "ci_high": float("nan")}

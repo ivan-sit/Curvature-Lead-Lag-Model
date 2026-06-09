@@ -55,6 +55,30 @@ def test_orientation_recovers_leader():
     assert oriented[0][1] == lagger
 
 
+def test_within_day_ic_drops_cross_day_pairs():
+    # planted lead-lag at lag 1; within-day groups must (a) still recover positive
+    # IC and (b) use fewer observations than the unrestricted version.
+    data = factor_lead_lag_returns(
+        n_assets=16, n_periods=4000, n_lead_lag_pairs=5,
+        lead_lag=1, lead_lag_strength=0.7, seed=5,
+    )
+    train, test = _split(data.returns)
+    true_pairs = [(l, g, lag) for (l, g, lag) in data.lead_lag_pairs]
+    # 10-bar "days" over the test window
+    groups = np.repeat(np.arange(len(test) // 10 + 1), 10)[: len(test)]
+    res_all = directional_ic(train, test, true_pairs)
+    res_wd = directional_ic(train, test, true_pairs, groups=groups)
+    assert res_wd.n_pairs >= 1
+    # within-day uses strictly fewer (forecast, realized) obs -> different pooled IC
+    assert res_wd.pooled_ic != res_all.pooled_ic
+    # signal survives the within-day restriction
+    assert res_wd.mean_ic > 0.0
+    # bootstrap carries groups without error
+    ci = block_bootstrap_ic(train, test, true_pairs, n_boot=30, block=10,
+                            seed=0, groups=groups)
+    assert ci["ci_low"] <= ci["mean"] <= ci["ci_high"]
+
+
 def test_correlation_selector_and_bootstrap_ci_run():
     data = factor_lead_lag_returns(n_assets=20, n_periods=3000, n_lead_lag_pairs=5, seed=6)
     train, test = _split(data.returns)

@@ -99,8 +99,10 @@ def run_pipeline(bundle: DataBundle, config: PipelineConfig | None = None) -> Pi
     # leakage): one trading-day label per train+val row, positionally aligned to
     # r_resid (residualize preserves row order). None => global pairing.
     groups = None
+    test_groups = None
     if cfg.within_day and isinstance(returns.index, pd.DatetimeIndex):
         groups = returns.index[trva].normalize().to_numpy()
+        test_groups = returns.index[te].normalize().to_numpy()
 
     # 1) residualize on train+val (factors estimated in-sample only)
     if sectors is not None and cfg.residualize_method == "market_sector":
@@ -211,8 +213,9 @@ def run_pipeline(bundle: DataBundle, config: PipelineConfig | None = None) -> Pi
 
     rows = []
     for name, pairs in method_pairs.items():
-        ic = directional_ic(r_train, r_test, pairs)
-        ci = block_bootstrap_ic(r_train, r_test, pairs, n_boot=100, block=20, seed=cfg.seed)
+        ic = directional_ic(r_train, r_test, pairs, groups=test_groups)
+        ci = block_bootstrap_ic(r_train, r_test, pairs, n_boot=100, block=20,
+                                seed=cfg.seed, groups=test_groups)
         rows.append({
             "method": name, "n_pairs": ic.n_pairs, "mean_ic": ic.mean_ic,
             "pooled_ic": ic.pooled_ic, "ic_ci_low": ci["ci_low"], "ic_ci_high": ci["ci_high"],

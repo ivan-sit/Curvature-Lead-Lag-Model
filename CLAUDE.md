@@ -32,10 +32,15 @@ leader–lagger information flow."** Concretely:
    sector/factor effects, so the "topological signal" risks merely rediscovering
    GICS sectors and a reviewer can dismiss the whole result. → Build the network
    on **factor/sector-residualized returns** (§4.5, §6 Agent 1, §9).
-3. **Primary metric is out-of-sample directional IC, not PnL.**
-   Negative-curvature bridges are a *predictability* story (leader today → lagger
-   tomorrow), so the headline metric is **OOS directional IC**. This is a *study*
-   of predictive structure, not a trading system. Mean-reversion and PnL are
+3. **Primary deliverable is STRUCTURAL distinctness, not a predictive backtest.**
+   (v2.1 update, post-empirics — see §0.1.) The headline claim is that weighted
+   augmented *directed* Forman curvature selects pairs **structurally distinct**
+   from correlation-, degree-, and undirected-curvature selection (the §7.1
+   cascade) — exactly the kind of structural-only validation Sandhu et al.
+   published with **no backtest**. Out-of-sample directional IC is retained as an
+   **exploratory secondary** diagnostic, reported honestly (the empirical IC
+   differences are small and not robust across subsamples — §0.1), NOT as the
+   claim the paper stands on. Mean-reversion and PnL are
    **secondary/optional** (§7.2, §8). **AlphaMark is NOT a core deliverable** in
    v2 — it is an optional "if time permits" PnL appendix; the entire study stands
    without it (cf. Sandhu et al., who validated structurally only, no backtest).
@@ -65,8 +70,42 @@ leader–lagger information flow."** Concretely:
 The sharpened one-line claim (adopt as the spine of the paper):
 
 > *Weighted augmented directed Forman curvature on **factor-residualized** lead-lag
-> networks predicts **out-of-sample** leader–lagger information flow that
-> correlation, degree, and undirected curvature miss.*
+> networks selects pairs whose directed structure is **distinct** from what
+> correlation, degree, and undirected curvature surface — a structural property the
+> symmetric correlation graph destroys.*
+
+(Earlier v2 framed this predictively — "predicts out-of-sample leader–lagger
+information flow." The empirics in §0.1 did not support a predictive headline, so
+the spine is now structural. The predictive angle survives only as an exploratory
+secondary.)
+
+---
+
+## 0.1 Empirical findings that set the v2.1 framing (June 8, 2026)
+
+Full pipeline run on **factor-residualized intraday 30-min returns, full-year 2019,
+~155 S&P large-caps, within-day lead-lag estimator** (no overnight leakage), plus
+a daily-CRSP run. What the data showed:
+
+- **Structural distinctness is real and robust.** Curvature-selected pairs barely
+  overlap correlation-selected pairs (top-K Jaccard ≈ 0), Spearman(F, |ρ|) ≈ 0.18
+  (≪ 0.8), plain Forman is the exact degree identity (R²=1) while augmented Forman
+  retains a non-degree component (R² ≈ 0.56). The directed graph encodes asymmetry
+  the symmetric correlation graph cannot. **This is the publishable result.**
+- **The predictive (OOS directional IC) claim did NOT hold up.** Across subsamples
+  the IC ranking of curvature vs. correlation/cointegration/random **flips**, and
+  **every 95% CI spans zero**. On the most-powered full-year run the Forman family
+  is numerically on top, but (a) it is not significant, (b) **undirected Forman ties
+  directed** (so the *directedness* novelty adds nothing to IC), and (c) Ollivier is
+  negative. No honest predictive headline is available.
+- **Decision (user, advisor-aligned with Sandhu precedent):** reframe to
+  **structural-only, no predictive backtest as the claim**; keep IC as an
+  exploratory secondary, and additionally report a **within-day-only IC horizon**
+  (forecast/realized pairing restricted to the same trading day) since it is cheap
+  and may surface intraday structure the cross-day horizon washes out.
+
+Do **not** chase IC significance by sweeping more universes/windows/K — that is
+p-hacking. The structural cascade is the contribution.
 
 ---
 
@@ -74,14 +113,16 @@ The sharpened one-line claim (adopt as the spine of the paper):
 
 Build an autonomous, agentic pipeline that applies **discrete Forman-Ricci
 curvature to directed lead-lag networks of US equities** — built on
-**factor/sector-residualized returns** — to identify pairs whose
-**directed predictability** (out-of-sample leader→lagger information flow) is
-**structurally distinct** from what correlation-, degree-, and undirected-
-curvature methods surface. The scientific claim is *structural and predictive*,
-not PnL: negatively-curved edges in the directed lead-lag network mark
-structurally isolated pairs (bridges between market regions) that carry
-out-of-sample directional information correlation/undirected-curvature methods
-overlook. This is a **study of predictive structure**, not (yet) a trading system.
+**factor/sector-residualized returns** — to identify pairs whose **directed
+structure** is **distinct** from what correlation-, degree-, and undirected-
+curvature methods surface. The scientific claim is *structural* (not predictive,
+not PnL — see §0.1): negatively-curved edges in the directed lead-lag network mark
+structurally isolated pairs (bridges between market regions) that
+correlation/degree/undirected-curvature methods do not recover, and the directed
+graph encodes lead-lag asymmetry the symmetric correlation graph destroys. We
+additionally report out-of-sample directional IC as an **exploratory secondary**
+(it did not yield a significant predictive edge — §0.1). This is a **structural
+study**, not (yet) a trading system.
 The deliverable is a Math 285J project (UCLA, advisor **Prof. Mihai Cucuringu**)
 explicitly engineered to become an **ICAIF 2026 paper** (deadline to be confirmed;
 v1 assumed **August 2, 2026**). The class is infrastructure; the paper is the
@@ -117,18 +158,24 @@ goal. Target: ~30% methodology, ~70% empirical.
 
 > Negatively-curved edges in directed lead-lag networks (built on factor-
 > residualized returns) mark structurally isolated pairs — bridges connecting
-> otherwise separated regions of the market — that carry out-of-sample
-> leader→lagger predictive information which correlation-, degree-, and
-> undirected-curvature methods overlook. Lead-lag asymmetry encodes information the
-> symmetric correlation graph destroys; weighted augmented discrete curvature on
+> otherwise separated regions of the market — that correlation-, degree-, and
+> undirected-curvature methods do not recover. Lead-lag asymmetry encodes structure
+> the symmetric correlation graph destroys; weighted augmented discrete curvature on
 > the *directed* graph captures it.
 
-The empirical claim to support/refute: *weighted-augmented-directed-Forman-selected
-pairs on the factor-residualized directed lead-lag network are (a) structurally
-distinct from correlation-, degree-, and undirected-curvature-selected pairs under
-the validation cascade, and (b) achieve higher **out-of-sample directional IC**
-than those baselines.* PnL (mean-reversion via AlphaMark) is an optional secondary
-confirmation, not the claim.
+The empirical claim to support/refute (PRIMARY): *weighted-augmented-directed-
+Forman-selected pairs on the factor-residualized directed lead-lag network are
+**structurally distinct** from correlation-, degree-, and undirected-curvature-
+selected pairs under the validation cascade (§7.1).* This is the supported,
+publishable result (§0.1).
+
+Secondary / exploratory claim (NOT supported, report honestly): *…and achieve
+higher out-of-sample directional IC than those baselines.* The empirics (§0.1)
+show IC differences that are small, sample-dependent, and not significant (CIs span
+zero); undirected Forman ties the directed version on IC, so directedness adds no
+predictive edge even where the structural distinctness is clear. We report this
+null transparently rather than overclaim. PnL (mean-reversion via AlphaMark)
+remains an optional, secondary item.
 
 ---
 
@@ -277,8 +324,9 @@ sensitivity across the sweep.
 4. **Structural Validator** — run the validation cascade (§7.1) with BH multiplicity
    control and a strict train/validate/test split.
 5. **Evaluation Agent** — convert selected pairs → directional forecasts → measure
-   **out-of-sample directional IC (PRIMARY, §7.2)**; optional secondary PnL via
-   mean-reversion / AlphaMark.
+   **out-of-sample directional IC (EXPLORATORY secondary, §7.2)**, both cross-period
+   and within-day-only horizons, reported honestly incl. the null; optional PnL via
+   mean-reversion / AlphaMark. (Primary deliverable is the §7.1 cascade — §0.1.)
 6. **Critic / Orchestrator (the "agentic" requirement)** — a genuine
    **propose→test→reject loop**: propose curvature variants, thresholds, and null
    models; the validator rejects those failing the cascade; **log every accepted
@@ -314,21 +362,36 @@ the point of the baseline).
 - Plus: AFRC curvature gap Δκ, rolling-window stability, fraction of
   negatively-curved edges crossing community boundaries (GICS sectors).
 
-### 7.2 Performance evaluation — PRIMARY: out-of-sample directional IC
+### 7.2 Performance evaluation — EXPLORATORY SECONDARY: out-of-sample directional IC
 
-The headline metric is the **out-of-sample directional information coefficient**:
-the rank correlation between the curvature-implied leader→lagger forecast
-(leader `r1(t)` predicting lagger `r2(t+τ)`; sign inherited from the lead-lag
-estimate, not the curvature) and realized future returns, on held-out data.
-Report **effect sizes with confidence intervals** and **block-bootstrap** the IC
-differences across methods.
+> **Status (v2.1):** This was the v2 *primary* metric; the empirics (§0.1)
+> demoted it to **exploratory secondary**. The structural cascade (§7.1) is now the
+> primary deliverable. Report IC honestly — including the null — do **not** tune it.
+
+The metric is the **out-of-sample directional information coefficient**: the rank
+correlation between the curvature-implied leader→lagger forecast (leader `r1(t)`
+predicting lagger `r2(t+τ)`; sign inherited from the lead-lag estimate, not the
+curvature) and realized future returns, on held-out data. Report **effect sizes
+with confidence intervals** and **block-bootstrap** the IC differences across
+methods. **Report the null transparently** (CIs span zero, ranking flips across
+subsamples — §0.1); the paper does not hinge on IC.
+
+**Two horizons (both reported):**
+- **Cross-period IC** — the default `(t, t+τ)` pairing.
+- **Within-day-only IC** — for intraday data, restrict the `(t, t+τ)` forecast/
+  realized pairing to the **same trading day** (no overnight gap). Implemented via
+  the `groups` arg to `directional_ic`/`block_bootstrap_ic` and `cfg.within_day` in
+  the pipeline. Cheap to add and may surface intraday structure the cross-day
+  horizon washes out — but still reported as exploratory, not tuned.
 
 **Baselines (identical settings):**
 - correlation-distance pair selection,
 - correlation-matrix clustering (Cartea-Cucuringu-Jin, §12 [G5]),
 - cointegration-selected pairs,
 - random selection,
-- **undirected Forman on the symmetrized graph** (isolates directedness),
+- **undirected Forman on the symmetrized graph** (isolates directedness — note
+  §0.1: on IC it *ties* the directed version, so directedness adds no predictive
+  edge; the directedness contribution lives in the §7.1 structural results),
 - **Ollivier-Ricci** (isolates the curvature notion).
 
 **Optional secondary — PnL (NOT a core v2 deliverable).** If time permits, convert
@@ -342,9 +405,10 @@ matrix). Contacts: `dhruvpatel97@g.ucla.edu`, `lihaoran@g.ucla.edu`. Keep a
 **minimal independent sanity backtest** so any AlphaMark result can't be an
 integration artifact.
 
-> NOTE: v1 dropped IC/OU-half-life in favor of AlphaMark. v2 REVERSES this per the
-> reviewer/instructor reframe: **OOS directional IC is primary**, AlphaMark/PnL is
-> optional secondary. The structural cascade (§7.1) stays the methodological core.
+> NOTE: v1 dropped IC/OU-half-life in favor of AlphaMark. v2 made OOS directional
+> IC primary. **v2.1 (§0.1) demotes IC to exploratory secondary** after the empirics
+> showed no significant predictive edge: the **structural cascade (§7.1) is the
+> primary deliverable and the paper's spine.** AlphaMark/PnL remains optional.
 
 ---
 
@@ -447,8 +511,10 @@ a robustness check.
 8. **Validation cascade** — the four tests + Δκ + stability + sector-bridge frac +
    **BH multiplicity + train/validate/test split + bootstrap ranking stability**.
    Threshold sweep here; operating point locked on validate.
-9. **Primary evaluation — out-of-sample directional IC** vs all baselines (§7.2),
-   with CIs and block-bootstrap.
+9. **Exploratory evaluation — out-of-sample directional IC** vs all baselines
+   (§7.2), both cross-period and within-day-only horizons, with CIs and
+   block-bootstrap. Report the null honestly (§0.1); the primary deliverable is the
+   step-8 cascade, not this.
 10. **(Optional) secondary PnL** — mean-reversion signal; minimal sanity backtest;
     AlphaMark only if time permits.
 11. **Critic/orchestrator agent** — wrap the pipeline in the LLM propose→test→reject
@@ -502,8 +568,11 @@ augmented variant likely needs a custom extension on top.
 - DO foreground **weighted augmented directed Forman** as the main object; treat
   plain `4 − deg − deg` Forman ONLY as the degree baseline. Compare all four
   objects (§4.6).
-- DO make **out-of-sample directional IC** the primary metric. PnL/mean-reversion
-  is optional secondary; **AlphaMark is NOT a core deliverable** in v2.
+- DO make the **structural validation cascade (§7.1) the primary deliverable**
+  (v2.1, §0.1). Out-of-sample directional IC is **exploratory secondary**, reported
+  honestly including the null (CIs span zero); report both the cross-period and the
+  within-day-only horizon. PnL/mean-reversion stays optional; **AlphaMark is NOT a
+  core deliverable.** DO NOT tune universes/windows/K to manufacture IC significance.
 - DO keep the structural validation cascade with BH multiplicity, train/val/test
   split, and bootstrap ranking stability. It is the methodological contribution.
 - DO run the synthetic sanity (kill-switch A) and triangle-density diagnostic
@@ -524,18 +593,19 @@ augmented variant likely needs a custom extension on top.
 
 ## 14. Success definition
 
-- **285J floor:** working pipeline on factor-residualized CRSP data; the four
-  curvature objects computed; structural cascade (with BH, splits, bootstrap) run;
-  out-of-sample directional IC reported vs baselines; results documented.
-- **ICAIF ceiling:** decisive empirical result that weighted-augmented-directed-
-  Forman-selected pairs are (a) structurally distinct from correlation/degree/
-  undirected-curvature AND (b) achieve higher out-of-sample directional IC than
-  baselines, ideally plus one novel theory bit (directed AFRC gap / directed line-
-  graph result). 8-page ACM `sigconf`, submitted by the confirmed ICAIF deadline.
-  Optional PnL appendix strengthens the finance-venue case. Journal version
-  (full multi-frequency study + Ollivier-Ricci comparison + curvature dynamics)
-  after.
+- **285J floor (MET):** working pipeline on factor-residualized CRSP + intraday TAQ
+  data; the four curvature objects computed; structural cascade (with BH, splits,
+  bootstrap) run; out-of-sample directional IC reported vs baselines (both horizons,
+  including the honest null); results documented (§0.1).
+- **ICAIF ceiling (v2.1):** decisive **structural** result that weighted-augmented-
+  *directed*-Forman-selected pairs are distinct from correlation/degree/undirected-
+  curvature selection under the full cascade — the directed-vs-undirected structural
+  contrast is the novelty over Sandhu et al. (who published structural-only, no
+  backtest). The OOS-IC section is reported honestly as exploratory (no significant
+  edge — §0.1), which is publishable as a clean negative on the predictive angle.
+  Ideally plus one novel theory bit (directed AFRC gap / directed line-graph result).
+  8-page ACM `sigconf`, by the confirmed ICAIF deadline. Optional PnL appendix.
+  Journal version (multi-frequency + Ollivier-Ricci + curvature dynamics) after.
 
-The work over the next ~3 months determines which one this becomes. Optimize for
-the **out-of-sample IC + structural-distinctness** result; let it decide whether to
-submit.
+Optimize for the **structural-distinctness** result; the predictive IC is reported,
+not chased. The structural cascade is already strong (§0.1) — the paper stands on it.
