@@ -104,6 +104,13 @@ in the sign direction**, with strength `|w|` as the (positive) curvature weight.
 data we use a **within-day estimator**: the `(t, t+τ)` pairing is restricted to the same trading
 day so lag pairs never straddle the overnight gap. The graph is sparsified at a quantile of `|w|`.
 
+**Time horizons tried (explicit).** `τ*` is selected per pair from a fixed grid of candidate
+lags — we did **not** sweep arbitrary horizons. Two regimes were tested: **daily** data with
+`τ ∈ {1, 2, 3, 5}` trading days, and **intraday 30-min** data with `τ ∈ {1, 2, 3}` bars
+(i.e. 30 / 60 / 90 minutes, within-day). We did **not** test weekly or monthly horizons; the
+intraday 30-min regime is the headline (where lead-lag is strongest), daily is the robustness
+check.
+
 ### 4.3 Four curvature objects (the ablation spine)
 
 | Object | Definition | Role |

@@ -92,11 +92,13 @@ def title_slide(prs, title, subtitle, meta):
     return s
 
 
-def content_slide(prs, idx, section, title, bullets, lead=None, closer=None):
+def content_slide(prs, idx, section, title, bullets, lead=None, closer=None,
+                  closer_label="Research question"):
     """bullets: list of str (level 0) or (str, level) tuples.
 
     ``closer`` (optional): a highlighted call-out box near the bottom — used to
-    land a research question or a one-line punch.
+    land a research question, a horizon summary, or a one-line punch. Its bold
+    blue tag is ``closer_label``.
     """
     s = _blank(prs)
     _, tf = _box(s, ML, TITLE_TOP, CW, Inches(0.9))
@@ -132,10 +134,10 @@ def content_slide(prs, idx, section, title, bullets, lead=None, closer=None):
         ctf.vertical_anchor = MSO_ANCHOR.MIDDLE
         ctf.margin_left = Inches(0.25); ctf.margin_right = Inches(0.25)
         cp = ctf.paragraphs[0]
-        lbl = cp.add_run(); lbl.text = "Research question   "
+        lbl = cp.add_run(); lbl.text = closer_label + "   "
         _set(lbl, 14, ACCENT, bold=True)
         rr = cp.add_run(); rr.text = closer
-        _set(rr, 18, INK, bold=True)
+        _set(rr, 17, INK, bold=True)
     _footer(s, idx, section)
     return s
 
@@ -340,14 +342,17 @@ def build():
         lead="Six stages, fully automated.",
     )
 
-    # 7 — residualized lead-lag
+    # 7 — residualized lead-lag (+ explicit horizons)
     content_slide(
         prs, nx(), "What I did", "Step 1 — Residualized, directed network",
         ["Residualize first: on raw returns, market + sector dominate the graph —",
          ("otherwise curvature just rediscovers GICS sectors (instructor requirement).", 1),
          "Edge weight = BCR signed lead-lag:  w(i→j) = ρ_ij(τ*) − ρ_ji(τ*).",
-         ("Antisymmetric → each pair is a directed edge in the sign direction.", 1),
-         "Intraday: within-day estimator (lag pairs never cross the overnight gap)."],
+         ("τ* = the lag of peak signal, picked per pair; intraday uses a within-day "
+          "estimator (no overnight gap).", 1)],
+        closer_label="Horizons tried",
+        closer="Daily: τ = 1–5 trading days   ·   Intraday: τ = 1–3 × 30-min bars "
+               "(30–90 min).   No weekly / monthly.",
     )
 
     # 8 — four objects (with plain-language "what it measures")
