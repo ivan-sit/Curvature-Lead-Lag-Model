@@ -139,8 +139,18 @@ def content_slide(prs, idx, section, title, bullets, lead=None, closer=None):
     return s
 
 
+def _fill_cell(cell, val, size, color, bold, align):
+    """Write possibly multi-line text into a table cell (split on '\\n')."""
+    tf = cell.text_frame
+    for k, line in enumerate(str(val).split("\n")):
+        para = tf.paragraphs[0] if k == 0 else tf.add_paragraph()
+        para.alignment = align
+        run = para.add_run(); run.text = line
+        _set(run, size, color, bold=bold)
+
+
 def table_slide(prs, idx, section, title, headers, rows, note=None, lead=None,
-                col_widths=None, highlight_rows=()):
+                col_widths=None, highlight_rows=(), align=None):
     s = _blank(prs)
     _, tf = _box(s, ML, TITLE_TOP, CW, Inches(0.9))
     p = tf.paragraphs[0]
@@ -159,15 +169,15 @@ def table_slide(prs, idx, section, title, headers, rows, note=None, lead=None,
     if col_widths:
         for j, w in enumerate(col_widths):
             gtbl.columns[j].width = w
+    amap = {"l": PP_ALIGN.LEFT, "c": PP_ALIGN.CENTER, "r": PP_ALIGN.RIGHT}
+    aligns = [amap[a] for a in align] if align else \
+        [PP_ALIGN.LEFT] + [PP_ALIGN.CENTER] * (nc - 1)
     # header
     for j, h in enumerate(headers):
         c = gtbl.cell(0, j)
         c.fill.solid(); c.fill.fore_color.rgb = ACCENT
         c.vertical_anchor = MSO_ANCHOR.MIDDLE
-        para = c.text_frame.paragraphs[0]
-        para.alignment = PP_ALIGN.LEFT if j == 0 else PP_ALIGN.CENTER
-        run = para.add_run(); run.text = h
-        _set(run, 15, WHITE, bold=True)
+        _fill_cell(c, h, 15, WHITE, True, aligns[j])
     # body
     for i, row in enumerate(rows, start=1):
         hl = (i - 1) in highlight_rows
@@ -176,10 +186,7 @@ def table_slide(prs, idx, section, title, headers, rows, note=None, lead=None,
             c.fill.solid()
             c.fill.fore_color.rgb = PALE if (hl or i % 2 == 0) else WHITE
             c.vertical_anchor = MSO_ANCHOR.MIDDLE
-            para = c.text_frame.paragraphs[0]
-            para.alignment = PP_ALIGN.LEFT if j == 0 else PP_ALIGN.CENTER
-            run = para.add_run(); run.text = val
-            _set(run, 14, INK if hl else BODY, bold=hl)
+            _fill_cell(c, val, 14, INK if hl else BODY, hl, aligns[j])
     if note:
         _, nf = _box(s, ML, Inches(6.25), CW, Inches(0.7))
         pp = nf.paragraphs[0]
@@ -283,16 +290,26 @@ def build():
          "Intraday: within-day estimator (lag pairs never cross the overnight gap)."],
     )
 
-    # 8 — four objects
+    # 8 — four objects (with plain-language "what it measures")
     table_slide(
         prs, nx(), "What I did", "Step 2 — Four curvature objects",
-        ["Object", "Role"],
-        [["Plain directed Forman  (4 − deg − deg)", "Degree BASELINE (signal ≡ 0 by design)"],
-         ["Triangle-augmented  F# = F + 3m", "Higher-order: isolates 3m"],
-         ["Weighted augmented directed Forman", "MAIN object"],
-         ["Ollivier-Ricci  (optimal transport)", "Robustness / contrast (Sandhu's)"]],
+        ["Object", "What it measures", "Role"],
+        [["Plain directed Forman\n4 − deg_in − deg_out",
+          "only the two endpoints' link counts — pure connectivity",
+          "Degree BASELINE\n(no higher-order signal)"],
+         ["Triangle-augmented\nF# = F + 3m",
+          "+3 for every triangle the edge sits inside",
+          "Higher-order:\nisolates the 3m term"],
+         ["Weighted augmented\ndirected Forman",
+          "lead-lag strength + triangles + edge direction",
+          "MAIN object"],
+         ["Ollivier-Ricci\n(optimal transport)",
+          "cost to morph one node's neighborhood into the other's",
+          "Robustness / contrast\n(Sandhu's)"]],
+        lead="One ablation, from pure degree to full directed curvature.",
         note="Plain Forman is an exact function of endpoint degrees — the baseline the rest must beat.",
-        col_widths=[Inches(6.4), Inches(5.2)],
+        col_widths=[Inches(3.6), Inches(4.7), Inches(3.3)],
+        align=["l", "l", "l"],
         highlight_rows=(2,),
     )
 
