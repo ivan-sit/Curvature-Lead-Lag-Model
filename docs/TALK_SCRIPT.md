@@ -1,10 +1,10 @@
 # Talk script — CRISP: Curvature of Residualized, Signed Lead-Lag Pairs
-### ~18–22 minutes · 24 slides · spoken first-person · mid-project seminar
+### ~18–21 minutes · 23 slides · spoken first-person · mid-project seminar
 
 > Delivery: this is a *research update / skeleton of the final paper*, not a finished project.
 > Spine = **two hypotheses → answer both honestly**: H1 (structural distinctness) **confirmed**;
 > H2 (predictive edge) **rejected** across 25 years. If short on time, compress slides 2–3
-> (motivation) and merge the two agentic slides (20–21). Don't oversell — the honesty is the point.
+> (motivation). Don't oversell — the honesty is the point.
 
 ---
 
@@ -122,34 +122,26 @@ a 21-window walk-forward rather than one split; five baselines including correla
 cointegration, and undirected Forman; and I settled the triangle convention with the data, not by
 assumption."
 
-### Slide 20 — Agentic AI workflow: where it was used  (~70s)
-"Since this is the agentic-AI course — where the tools actually went. An agent built the entire
-six-module pipeline and 50 tests; ran the WRDS data pulls autonomously; caught its own bugs,
-including a TAQ memory bug and a gitignore data-loss bug; designed experiments like the within-day
-estimator and the walk-forward; and generated this deck, the report, and the talk script. The
-reflection: building and testing this pipeline, pulling 25 years of data plus intraday TAQ, running
-a 21-window walk-forward, *and* writing it up — that's days instead of months."
+### Slide 20 — Agentic AI workflow  (~55s)
+"Since this is the agentic-AI course — where the tools actually helped. Two things, simply. First,
+it helped me **research** the idea — surveying the curvature and lead-lag literature, and coding the
+pipeline. Second, and most importantly, it helped me **link curvature to lead-lag networks** — connect
+the graph-geometry side to the finance side. The framing and the judgment stayed human. That's it."
 
-### Slide 21 — Agentic AI: what worked vs. what needed a human  (~60s)
-"But it wasn't hands-off. The machine did the building — pipeline, data, debugging, experiments.
-The **researcher** did the judgment: the decision to reframe from predictive to structural, the
-decision *not* to p-hack toward significance, and the domain calls on horizons, coverage, and how
-to read an honest null. Agentic AI did the building; human judgment set the framing."
-
-### Slide 22 — Limitations  (~55s)
+### Slide 21 — Limitations  (~55s)
 "Limitations, plainly. Intraday is 2019 only, by cost. The network is triangle-sparse, which limits
 community methods. The directed line-graph and directed curvature-gap are theoretically open, so I
 use the undirected reduction. IC is at a fixed k, not pre-registered. And the daily universe is
 survivor-biased within each window."
 
-### Slide 23 — Future work & submission  (~55s)
+### Slide 22 — Future work & submission  (~55s)
 "Future work. Point the same directed-curvature tools at *other* market graphs, beyond lead-lag.
 Develop the directed line-graph and curvature-gap theory — possibly with Melanie Weber. If I
 revisit prediction, do it as a pre-registered confirmatory test. And the big deferred-by-cost
 experiment is multi-year intraday. Target: extend to an 8-page ACM sigconf for **ICAIF 2026,
 deadline August 2**."
 
-### Slide 24 — Project Status Overview  (~45s)
+### Slide 23 — Project Status Overview  (~45s)
 "Where things stand. **Completed**: the full pipeline and tests, the four curvature objects, the
 structural cascade, the two-horizon 25-year predictive test, the WRDS data, and the write-up.
 **In progress**: the agentic propose-test-reject orchestrator, the LaTeX main file, and expanding

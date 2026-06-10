@@ -582,43 +582,18 @@ def build():
         lead="The result is stress-tested, not cherry-picked.",
     )
 
-    # 19 — agentic AI workflow: where used
-    table_slide(
-        prs, nx(), "Agentic AI", "Agentic AI workflow — where it was used",
-        ["Stage", "How agentic AI was used"],
-        [["Coding & tests", "built the 6-module pipeline + 50 tests end-to-end"],
-         ["Data acquisition", "autonomous WRDS pulls (CRSP, Compustat, TAQ); resumable loader"],
-         ["Debugging", "caught a TAQ memory bug, a gitignore data-loss bug, a NaN-graph hang"],
-         ["Experiment design", "within-day estimator, walk-forward, two-horizon test"],
-         ["Writing & visuals", "this deck (python-pptx), the report, the talk script"]],
-        lead="An agent ran most of the research loop.",
-        note="Impossible / far slower without it: build+test a 6-module pipeline, pull 25 yrs of "
-             "WRDS + intraday TAQ, run a 21-window walk-forward, AND write it up — in days, not months.",
-        col_widths=[Inches(3.0), Inches(8.6)],
-        align=["l", "l"],
+    # 19 — agentic AI workflow (single, concise)
+    content_slide(
+        prs, nx(), "Agentic AI", "Agentic AI workflow",
+        ["Helped me research the idea — surveying the curvature and lead-lag literature, "
+         "and coding the pipeline.",
+         "Its core role: linking curvature (graph geometry) to directed lead-lag networks "
+         "(the finance side).",
+         "Framing and judgment stayed human."],
+        lead="What agentic AI did here.",
     )
 
-    # 20 — agentic AI: worked vs needed-human
-    verdict_slide(
-        prs, nx(), "Agentic AI", "What worked vs. what needed a human",
-        left={
-            "label": "Autonomous (worked well)", "color": GREEN, "pale": PALE_G,
-            "verdict": "The machine",
-            "points": ["full pipeline build, tests, refactors",
-                       "WRDS data pulls + self-caught bugs",
-                       "21-window walk-forward + cascade"],
-        },
-        right={
-            "label": "Human-in-the-loop (judgment)", "color": ACCENT, "pale": PALE,
-            "verdict": "The researcher",
-            "points": ["the structural-vs-predictive reframe",
-                       "deciding NOT to p-hack for significance",
-                       "horizon / coverage / honest-null calls"],
-        },
-        lead="Agentic AI did the building; human judgment set the framing.",
-    )
-
-    # 21 — limitations
+    # 20 — limitations
     content_slide(
         prs, nx(), "Limitations", "Limitations",
         ["Intraday is 2019 only (TAQ cost) — not a 25-year intraday panel.",
