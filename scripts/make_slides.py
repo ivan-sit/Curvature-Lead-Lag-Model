@@ -327,13 +327,13 @@ def build():
     def nx():
         nonlocal n; n += 1; return n
 
-    # 1 — title
+    # 1 — title (+ acronym CRISP)
     title_slide(
         prs,
-        "Ricci Curvature on Directed Lead-Lag Networks",
-        "A structural study of factor-residualized information flow in US equities",
+        "CRISP: Curvature of Residualized, Signed Lead-Lag Pairs",
+        "Directed Forman-Ricci curvature as a structural lens on US equity information flow",
         ["Ivan Sit", "UCLA Math 285J — Agentic AI for Autonomous Research in Quant Finance",
-         "Advisor: Prof. Mihai Cucuringu   ·   Target: ICAIF 2026"],
+         "Advisor: Prof. Mihai Cucuringu   ·   Mid-project seminar, June 2026   ·   Target: ICAIF 2026"],
     )
 
     # 2 — what is curvature
@@ -381,6 +381,25 @@ def build():
         note="We answer both at the end.",
         col_widths=[Inches(5.7), Inches(5.7)],
         align=["l", "l"],
+    )
+
+    # 5b — related work & contribution
+    table_slide(
+        prs, nx(), "Related work", "Related literature & contribution",
+        ["Prior work", "What it did", "What CRISP adds"],
+        [["Sandhu et al. 2016", "Ollivier-Ricci on undirected correlation nets",
+          "directed lead-lag + Forman"],
+         ["Forman 2003; Samal 2018", "Forman / augmented curvature on graphs",
+          "directed, weighted, residualized"],
+         ["Bennett–Cucuringu–Reinert 2022", "signed lead-lag estimator + significance",
+          "adopted as the edge weight"],
+         ["Tian–Lubberts–Weber 2025", "line-graph curvature clustering (undirected)",
+          "pair-space view on L(G)"]],
+        lead="Gap: nobody has put directed curvature on a residualized lead-lag graph.",
+        note="Contribution: the directed-vs-undirected and Forman-vs-Ollivier contrasts, "
+             "on factor-residualized returns — a structural extension of Sandhu.",
+        col_widths=[Inches(3.6), Inches(4.6), Inches(3.4)],
+        align=["l", "l", "l"],
     )
 
     # 6 — what I did, overview (flow chart)
@@ -552,16 +571,95 @@ def build():
         lead="The paper stands on H1. H2 is reported transparently — across 25 years.",
     )
 
-    # 17 — outlook
+    # 18 — robustness & ablations
     content_slide(
-        prs, nx(), "Outlook", "Where this could go",
-        ["Maybe not lead-lag at all — apply the same directed-curvature tools to "
-         "other market graphs and relations.",
-         "Directed line-graph & directed AFRC-gap theory (open problems).",
-         "A template for autonomous, agent-driven research in quant finance: an agent "
-         "ran the full loop — hypothesize, build, test, honestly reject.",
-         "Write-up → 8-page ACM sigconf for ICAIF 2026."],
-        lead="The structural toolkit is not tied to one construction.",
+        prs, nx(), "Robustness", "Robustness & ablations",
+        ["Four-object ablation: plain (degree baseline) → augmented → weighted-directed → Ollivier.",
+         "Two horizons: intraday 30-min (2019) and daily close-to-close (2000–2024).",
+         "25-year walk-forward: 21 rolling windows, not a single train/test split.",
+         "Five baselines: correlation, cointegration, random, undirected Forman, Ollivier.",
+         "Triangle convention (common-neighbor vs strict-cyclic) settled by the data."],
+        lead="The result is stress-tested, not cherry-picked.",
+    )
+
+    # 19 — agentic AI workflow: where used
+    table_slide(
+        prs, nx(), "Agentic AI", "Agentic AI workflow — where it was used",
+        ["Stage", "How agentic AI was used"],
+        [["Coding & tests", "built the 6-module pipeline + 50 tests end-to-end"],
+         ["Data acquisition", "autonomous WRDS pulls (CRSP, Compustat, TAQ); resumable loader"],
+         ["Debugging", "caught a TAQ memory bug, a gitignore data-loss bug, a NaN-graph hang"],
+         ["Experiment design", "within-day estimator, walk-forward, two-horizon test"],
+         ["Writing & visuals", "this deck (python-pptx), the report, the talk script"]],
+        lead="An agent ran most of the research loop.",
+        note="Impossible / far slower without it: build+test a 6-module pipeline, pull 25 yrs of "
+             "WRDS + intraday TAQ, run a 21-window walk-forward, AND write it up — in days, not months.",
+        col_widths=[Inches(3.0), Inches(8.6)],
+        align=["l", "l"],
+    )
+
+    # 20 — agentic AI: worked vs needed-human
+    verdict_slide(
+        prs, nx(), "Agentic AI", "What worked vs. what needed a human",
+        left={
+            "label": "Autonomous (worked well)", "color": GREEN, "pale": PALE_G,
+            "verdict": "The machine",
+            "points": ["full pipeline build, tests, refactors",
+                       "WRDS data pulls + self-caught bugs",
+                       "21-window walk-forward + cascade"],
+        },
+        right={
+            "label": "Human-in-the-loop (judgment)", "color": ACCENT, "pale": PALE,
+            "verdict": "The researcher",
+            "points": ["the structural-vs-predictive reframe",
+                       "deciding NOT to p-hack for significance",
+                       "horizon / coverage / honest-null calls"],
+        },
+        lead="Agentic AI did the building; human judgment set the framing.",
+    )
+
+    # 21 — limitations
+    content_slide(
+        prs, nx(), "Limitations", "Limitations",
+        ["Intraday is 2019 only (TAQ cost) — not a 25-year intraday panel.",
+         "Triangle-sparse network limits AFRC community separability (Fesser–Weber–Lambiotte).",
+         "Directed line-graph & directed curvature-gap are theoretically open — undirected reduction used.",
+         "Predictive IC evaluated at fixed k = 20; not pre-registered.",
+         "Daily universe is survivor-biased within each window (continuous-presence filter)."],
+        lead="Stated plainly — these shape what we can and can't claim.",
+    )
+
+    # 22 — future work & submission
+    content_slide(
+        prs, nx(), "Future work", "Future work & submission",
+        ["Apply the directed-curvature tools beyond lead-lag — other market graphs and relations.",
+         "Directed line-graph & directed AFRC-gap theory (possible Weber collaboration).",
+         "If predictive is revisited: a pre-registered, confirmatory test — not an exploratory sweep.",
+         "Multi-year intraday with a larger TAQ budget (the main deferred-by-cost experiment)."],
+        lead="Target: extend to an 8-page ACM sigconf — ICAIF 2026, deadline Aug 2.",
+    )
+
+    # 23 — project status overview
+    table_slide(
+        prs, nx(), "Status", "Project Status Overview",
+        ["✓  Completed", "⟳  In progress", "▢  Remaining before final"],
+        [["Full pipeline + 50 tests\n"
+          "Four curvature objects\n"
+          "Structural cascade (H1) ✓\n"
+          "Predictive test (H2): 2 horizons, 25 yrs\n"
+          "WRDS data (CRSP/Compustat/TAQ)\n"
+          "Report + deck + talk script",
+          "Agentic propose→test→reject\n"
+          "orchestrator\n"
+          "LaTeX/Overleaf main.tex\n"
+          "Bibliography → 20–25 refs",
+          "Directed line-graph theory\n"
+          "Multi-year intraday (budget)\n"
+          "Final 8-page ICAIF write-up\n"
+          "Paper-quality figures"]],
+        lead="Mid-project status — ~10 days to the final write-up.",
+        col_widths=[Inches(4.1), Inches(3.5), Inches(4.0)],
+        align=["l", "l", "l"],
     )
 
     out = Path("slides"); out.mkdir(exist_ok=True)
