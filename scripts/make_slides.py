@@ -606,32 +606,34 @@ def build():
         lead="Stated plainly — these shape what we can and can't claim.",
     )
 
-    # 22 — future work & submission
+    # 22 — what's next (active work + submission)
     content_slide(
-        prs, nx(), "Future work", "Future work & submission",
-        ["Apply the directed-curvature tools beyond lead-lag — other market graphs and relations.",
-         "Directed line-graph & directed AFRC-gap theory (possible Weber collaboration).",
-         "If predictive is revisited: a pre-registered, confirmatory test — not an exploratory sweep.",
-         "Multi-year intraday with a larger TAQ budget (the main deferred-by-cost experiment)."],
-        lead="Target: extend to an 8-page ACM sigconf — ICAIF 2026, deadline Aug 2.",
+        prs, nx(), "What's next", "What's next",
+        ["Multi-regime intraday robustness — pulling 2008 / 2015 / 2020 to join 2019 "
+         "(crash, calm, COVID).",
+         "Agentic propose→test→reject orchestrator (built) — logs every accept/reject; "
+         "the residualization ladder (market / sector / PCA) runs through it.",
+         "Directed line-graph & directed curvature-gap theory (open; possible Weber collaboration).",
+         "Extend to an 8-page ACM sigconf — ICAIF 2026, deadline Aug 2."],
+        lead="Underway now.",
     )
 
     # 23 — project status overview
     table_slide(
         prs, nx(), "Status", "Project Status Overview",
         ["✓  Completed", "⟳  In progress", "▢  Remaining before final"],
-        [["Full pipeline + 50 tests\n"
+        [["Full pipeline + 52 tests\n"
           "Four curvature objects\n"
           "Structural cascade (H1) ✓\n"
           "Predictive test (H2): 2 horizons, 25 yrs\n"
-          "WRDS data (CRSP/Compustat/TAQ)\n"
+          "Agentic orchestrator (propose→test→reject)\n"
+          "Residualization-ladder ablation\n"
           "Report + deck + talk script",
-          "Agentic propose→test→reject\n"
-          "orchestrator\n"
+          "Multi-regime intraday pull\n"
+          "(2008 / 2015 / 2020)\n"
           "LaTeX/Overleaf main.tex\n"
           "Bibliography → 20–25 refs",
           "Directed line-graph theory\n"
-          "Multi-year intraday (budget)\n"
           "Final 8-page ICAIF write-up\n"
           "Paper-quality figures"]],
         lead="Mid-project status — ~10 days to the final write-up.",
