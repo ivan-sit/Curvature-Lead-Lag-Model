@@ -546,12 +546,13 @@ def build():
     # 14 — H1 result 3: triangle sparsity
     content_slide(
         prs, nx(), "Results — H1", "The structure is cross-sector",
-        ["Almost all of the network's triangle structure spans sectors —",
-         ("only ~1% of triangles sit within a single GICS sector.", 1),
-         "So the relationships curvature highlights are cross-sector links — exactly what "
-         "a sector- or correlation-based grouping would not surface.",
-         "Honest caveat: with so few within-group triangles, the community step can't "
-         "cleanly carve out clusters."],
+        ["A 'triangle' = three stocks each linked to the other two — a tight local cluster, "
+         "and what the curvature augmentation counts.",
+         "Almost all of these triangles span sectors — only ~1% sit within a single GICS sector.",
+         "So curvature highlights cross-sector links that a sector- or correlation-based "
+         "grouping would never put together.",
+         "Honest caveat: so few within-group triangles → the community step can't cleanly "
+         "carve out clusters."],
         lead="Where do the pairs curvature picks actually live?",
     )
 
