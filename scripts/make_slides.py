@@ -430,6 +430,8 @@ def build():
          "Edge weight = BCR signed lead-lag:  w(i→j) = ρ_ij(τ*) − ρ_ji(τ*).",
          ("ρ_ij(τ) = corr( i's return today, j's return τ bars later ); τ* = the peak-signal "
           "lag, per pair — so the sign of w says who leads.", 1),
+         "Keep only the strongest ~10% of pairs as edges — most lead-lag is noise; this is why "
+         "the graph is sparse.",
          "Two time horizons: daily close-to-close, and intraday 30-min.",
          ("Intraday uses a within-day estimator — lag pairs never cross the overnight gap.", 1)],
     )
