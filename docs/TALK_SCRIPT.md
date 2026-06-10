@@ -145,11 +145,12 @@ Then the open theory — directed line-graph and curvature-gap — and extending
 sigconf for **ICAIF 2026, deadline August 2**."
 
 ### Slide 23 — Project Status Overview  (~45s)
-"Where things stand. **Completed**: the full pipeline and tests, the four curvature objects, the
-structural cascade, the two-horizon 25-year predictive test, the WRDS data, and the write-up.
-**In progress**: the agentic propose-test-reject orchestrator, the LaTeX main file, and expanding
-the bibliography. **Remaining before the final**: the directed line-graph theory, multi-year
-intraday if budget allows, and the final eight-page write-up. Thanks — happy to take questions."
+"Where things stand. **Completed**: the full pipeline and 52 tests, the four curvature objects, the
+structural cascade, the two-horizon 25-year predictive test, the agentic orchestrator, and the
+residualization-ladder ablation. **In progress**: the multi-regime intraday pull, the LaTeX main
+file, and expanding the bibliography to 20–25 references. **Remaining before the final**: the
+directed line-graph theory, paper-quality figures, and the final eight-page write-up. Thanks —
+happy to take questions."
 
 ---
 
