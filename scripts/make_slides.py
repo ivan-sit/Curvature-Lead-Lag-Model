@@ -512,6 +512,23 @@ def build():
         highlight_rows=(0, 1),
     )
 
+    # 13b — the four objects compared (the ablation grid)
+    table_slide(
+        prs, nx(), "Results — H1", "The four objects, compared",
+        ["Object", "Spearman", "R² on degree", "mean IC", "compute"],
+        [["Plain directed Forman  (baseline)", "0.09", "1.00", "+0.014", "0.03 s"],
+         ["Weighted Forman", "0.08", "0.97", "+0.007", "0.03 s"],
+         ["Weighted augmented directed  (MAIN)", "0.18", "0.56", "+0.005", "0.03 s"],
+         ["Ollivier-Ricci", "0.24", "0.14", "−0.006", "15.9 s"]],
+        lead="All four pick pairs disjoint from correlation (Jaccard ≈ 0).",
+        note="Best tradeoff = weighted-augmented Forman: real higher-order signal (44% non-degree) "
+             "at ~0 cost. Ollivier carries the most non-degree signal but at ~600× the compute and "
+             "no IC gain. None predicts (IC ≈ 0).",
+        col_widths=[Inches(4.4), Inches(1.7), Inches(2.1), Inches(1.7), Inches(1.7)],
+        align=["l", "c", "c", "c", "c"],
+        highlight_rows=(2,),
+    )
+
     # 14 — H1 result 2: degree ablation (BOTH horizons)
     table_slide(
         prs, nx(), "Results — H1", "A clean degree ablation",
