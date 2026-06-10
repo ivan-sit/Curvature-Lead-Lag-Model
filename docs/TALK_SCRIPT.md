@@ -53,10 +53,12 @@ cascade; out come the structurally isolated pairs. It runs end-to-end without me
 
 ### Slide 8 — Step 1: Residualized, directed network  (~70s)
 "Two key choices. I residualize *before* building the graph — otherwise market and sector dominate
-and curvature just rediscovers GICS sectors. And the edge weight is the Bennett-Cucuringu-Reinert
-signed lead-lag statistic — it's antisymmetric, so each pair becomes a directed edge from leader to
-lagger. Lag is picked per pair; intraday uses a within-day estimator so pairs never cross the
-overnight gap."
+and curvature just rediscovers GICS sectors. The edge weight is the Bennett-Cucuringu-Reinert
+signed lead-lag statistic. Here ρ-i-j of τ is just the **lagged cross-correlation** — i's return
+today against j's return τ bars later — so ρ-i-j minus ρ-j-i is 'i leads j' minus 'j leads i'. It's
+antisymmetric, so each pair becomes a directed edge from leader to lagger and the sign sets the
+arrow. Lag is picked per pair; there are two horizons — daily and intraday 30-minute — and intraday
+uses a within-day estimator so pairs never cross the overnight gap."
 
 ### Slide 9 — Step 2: Four curvature objects  (~70s)
 "Four curvatures, as an ablation. Plain directed Forman is just four minus the endpoint degrees —

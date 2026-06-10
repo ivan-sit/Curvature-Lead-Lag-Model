@@ -420,8 +420,8 @@ def build():
         ["Residualize first: on raw returns, market + sector dominate the graph —",
          ("otherwise curvature just rediscovers GICS sectors (instructor requirement).", 1),
          "Edge weight = BCR signed lead-lag:  w(i→j) = ρ_ij(τ*) − ρ_ji(τ*).",
-         ("τ* = the lag of peak signal, picked per pair; the candidate horizons are on "
-          "the next slide.", 1),
+         ("ρ_ij(τ) = corr( i's return today, j's return τ bars later ); τ* = the peak-signal "
+          "lag, per pair — so the sign of w says who leads.", 1),
          "Two time horizons: daily close-to-close, and intraday 30-min.",
          ("Intraday uses a within-day estimator — lag pairs never cross the overnight gap.", 1)],
     )
