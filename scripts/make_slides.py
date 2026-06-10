@@ -583,6 +583,20 @@ def build():
         lead="What agentic AI did here.",
     )
 
+    # 19b — the agentic orchestrator (what it did + its future role)
+    content_slide(
+        prs, nx(), "Agentic AI", "The agentic orchestrator",
+        ["Proposed 12 candidate signals — 3 residualizations × 2 thresholds × 2 curvature "
+         "objects — and accepted 6, rejected 6.",
+         "Auto-rejected every plain-Forman (R²-on-degree = 1.00, pure degree); accepted every "
+         "augmented (0.45–0.67).",
+         "Real result it produced: H1 holds under all three residualizations (market / sector / "
+         "PCA) — every decision logged with its reason."],
+        closer="Going forward it proposes & vets the next hypotheses — today it sweeps a fixed "
+               "grid; an LLM proposer would let it generate novel signal families.",
+        closer_label="Future role",
+    )
+
     # 20 — limitations
     content_slide(
         prs, nx(), "Limitations", "Limitations",
