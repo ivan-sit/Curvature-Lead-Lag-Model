@@ -86,19 +86,17 @@ intraday is the high-frequency cross-check; daily is the long backbone."
 ### Slide 13 — RESULTS divider  (~15s)
 "So — two hypotheses, two answers."
 
-### Slide 14 — H1: Curvature is not correlation  (~65s)
-"Distinctness, both horizons — and this is for our **main object**, the weighted augmented directed
-Forman. The overlap between curvature-picked and correlation-picked pairs is essentially **zero**.
-The rank correlation between curvature and absolute correlation is 0.18 intraday, 0.07 daily — both
-far below 0.8. So curvature's isolated pairs are *not* correlation's co-moving pairs, and that holds
-across 25 years. This is the headline. *(On the next slide I'll compare all four objects to each
-other — here I'm just establishing the main one is distinct from correlation.)*"
-
-### Slide 15 — H1: A clean degree ablation  (~65s)
-"Is curvature just degree? Plain Forman regresses on degree with R-squared exactly **one** — the
-pure baseline, and proof the test is calibrated. But augmented Forman is 0.56 intraday, 0.18 daily
-— so **44 to 82 percent** is *not* degree. That extra is the triangle term — real higher-order
-structure, at both horizons."
+### Slide — H1: Distinct from correlation, and from degree  (one table, all four objects)  (~75s)
+"This is the H1 headline, and it answers two ways curvature could just be a re-skin of something
+simpler — and shows it's neither. Read the table across the four objects. **Not correlation:**
+Spearman against absolute correlation stays 0.08–0.24, far below 0.8, and the overlap of picked
+pairs — Jaccard — is essentially zero. So curvature's pairs are not correlation's pairs. **Not
+degree:** look at R-squared on degree — it's exactly 1.0 for plain Forman, which is the pure degree
+baseline by design, and it drops to 0.56 for our main object — so 44% of it is genuinely beyond
+degree, the higher-order triangle term. And it's cheap: the whole Forman family computes in three
+hundredths of a second, versus 16 seconds for Ollivier. So the main object — weighted augmented
+directed Forman — is the sweet spot, and this distinctness holds at both horizons (daily Spearman is
+0.07). I'll talk about whether any of it *predicts* in a moment — that's a separate slide."
 
 ### Slide — H1: The structure is cross-sector  (~60s)
 "Quick definition first: a **triangle** here is three stocks each linked to the other two — a tight

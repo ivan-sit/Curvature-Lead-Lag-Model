@@ -498,50 +498,21 @@ def build():
     # 12 — section: results
     section_slide(prs, nx(), "RESULTS", "Two hypotheses, two answers.")
 
-    # 13 — H1 result 1: distinctness (BOTH horizons)
+    # 13 — H1: distinct from correlation AND from degree (one merged table)
     table_slide(
-        prs, nx(), "Results — H1", "Curvature is not correlation",
-        ["Test", "Intraday\n2019", "Daily\n2000–24", "What it means"],
-        [["Top-K Jaccard vs correlation", "≈ 0.0", "0.0", "near-disjoint pair sets"],
-         ["Spearman(F, |ρ|)", "0.18", "0.07", "barely tracks |ρ|  (≪ 0.8)"]],
-        lead="Our main object (weighted augmented directed Forman) vs. correlation — both horizons.",
-        note="F = the main object. Significance: curvature is not a re-skin of correlation — it holds "
-             "on the 2019 intraday graph AND the full 2000–2024 daily span. This distinctness IS the "
-             "headline result. (The next slide compares all four objects to each other.)",
-        col_widths=[Inches(3.7), Inches(1.9), Inches(2.0), Inches(4.0)],
-        align=["l", "c", "c", "l"],
-        highlight_rows=(0, 1),
-    )
-
-    # 13b — the four objects compared (the ablation grid)
-    table_slide(
-        prs, nx(), "Results — H1", "The four objects, compared",
-        ["Object", "Spearman", "R² on degree", "mean IC", "compute"],
-        [["Plain directed Forman  (baseline)", "0.09", "1.00", "+0.014", "0.03 s"],
-         ["Weighted Forman", "0.08", "0.97", "+0.007", "0.03 s"],
-         ["Weighted augmented directed  (MAIN)", "0.18", "0.56", "+0.005", "0.03 s"],
-         ["Ollivier-Ricci", "0.24", "0.14", "−0.006", "15.9 s"]],
-        lead="All four pick pairs disjoint from correlation (Jaccard ≈ 0).",
-        note="Best tradeoff = weighted-augmented Forman: real higher-order signal (44% non-degree) "
-             "at ~0 cost. Ollivier carries the most non-degree signal but at ~600× the compute and "
-             "no IC gain. None predicts (IC ≈ 0).",
-        col_widths=[Inches(4.4), Inches(1.7), Inches(2.1), Inches(1.7), Inches(1.7)],
+        prs, nx(), "Results — H1", "Distinct from correlation — and from degree",
+        ["Object", "Spearman\nvs |ρ|", "Jaccard\nvs corr", "R² on\ndegree", "compute"],
+        [["Plain directed Forman  (baseline)", "0.09", "0.0", "1.00", "0.03 s"],
+         ["Weighted Forman", "0.08", "0.0", "0.97", "0.03 s"],
+         ["Weighted augmented directed  (MAIN)", "0.18", "0.0", "0.56", "0.03 s"],
+         ["Ollivier-Ricci", "0.24", "0.0", "0.14", "15.9 s"]],
+        lead="Two ways to be a re-skin — of correlation, or of degree. Curvature is neither.",
+        note="NOT correlation: Spearman ≪ 0.8 and Jaccard ≈ 0 (disjoint picks). NOT degree: the "
+             "augmentation drops R²-on-degree from 1.00 (plain = pure degree) to 0.56 (44% is new). "
+             "Holds at both horizons (main object daily: Spearman 0.07, Jaccard 0, across 2000–2024).",
+        col_widths=[Inches(4.6), Inches(1.8), Inches(1.7), Inches(1.7), Inches(1.8)],
         align=["l", "c", "c", "c", "c"],
         highlight_rows=(2,),
-    )
-
-    # 14 — H1 result 2: degree ablation (BOTH horizons)
-    table_slide(
-        prs, nx(), "Results — H1", "A clean degree ablation",
-        ["Object  (R² on degree)", "Intraday\n2019", "Daily\n2000–24", "What it means"],
-        [["Plain Forman", "1.00", "1.00", "100% degree — pure baseline, by design"],
-         ["Augmented Forman", "0.56", "0.18", "44–82% is NOT degree → higher-order signal"]],
-        lead="Does curvature carry anything beyond connectivity? — checked at both horizons.",
-        note="Significance: plain Forman = pure degree (calibration ✓); the augmented object adds "
-             "real higher-order structure at both horizons — even more on daily (~82% non-degree).",
-        col_widths=[Inches(3.7), Inches(1.9), Inches(2.0), Inches(4.0)],
-        align=["l", "c", "c", "l"],
-        highlight_rows=(1,),
     )
 
     # 14 — H1 result 3: triangle sparsity
