@@ -606,7 +606,8 @@ def build():
          "curvature rising before crashes; bring that to the directed graph.",
          "Regime shifts: does the cross-sector structure change around stress? The 2008 & "
          "2020 intraday pulls feed exactly this.",
-         "Directed line-graph & curvature-gap theory (open; possible Weber collaboration).",
+         "Line graph → cluster lead-lag *relationships* (not stocks) into communities, e.g. "
+         "for diversification — once we have a triangle-richer graph (directed theory still open).",
          "Extend to an 8-page ACM sigconf — ICAIF 2026, deadline Aug 2."],
         lead="H2 failed — so pivot from forecasting returns to what curvature is strong at: structure.",
     )

@@ -145,8 +145,10 @@ what curvature is actually *strong* at: structure. First, **fragility / systemic
 Sandhu's original result was that curvature *rises before crashes*; the natural next step is to bring
 that to the directed graph. Second, **regime shifts** — does the cross-sector structure change around
 stress? The 2008 and 2020 intraday pulls I'm running feed exactly that question. Then the open theory
-— directed line-graph and curvature-gap — and extending to an 8-page ACM sigconf for **ICAIF 2026,
-deadline August 2**."
+— specifically, the **line graph**, whose job is to cluster the lead-lag *relationships* themselves
+(not the stocks) into communities — useful for diversification — but that needs a triangle-richer
+graph to work, and the directed theory is still open. And extending to an 8-page ACM sigconf for
+**ICAIF 2026, deadline August 2**."
 
 ### Slide 23 — Project Status Overview  (~45s)
 "Where things stand. **Completed**: the full pipeline and 52 tests, the four curvature objects, the
