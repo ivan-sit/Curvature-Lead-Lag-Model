@@ -578,12 +578,17 @@ def build():
     # 20 — limitations
     content_slide(
         prs, nx(), "Limitations", "Limitations",
-        ["Intraday is 2019 only (TAQ cost) — not a 25-year intraday panel.",
-         "Triangle-sparse network limits AFRC community separability (Fesser–Weber–Lambiotte).",
-         "Directed line-graph & directed curvature-gap are theoretically open — undirected reduction used.",
-         "Predictive IC evaluated at fixed k = 20; not pre-registered.",
-         "Daily universe is survivor-biased within each window (continuous-presence filter)."],
-        lead="Stated plainly — these shape what we can and can't claim.",
+        ["Intraday is one year (2019).",
+         ("25 years of 30-min TAQ is too costly to pull; daily covers the full 25.", 1),
+         "The clustering step is weak — too few triangles.",
+         ("finding communities needs triangles (tight clusters have them, bridges don't); "
+          "ours are too sparse to separate clusters, so we don't lean on it.", 1),
+         "Prediction used the top-20 pairs, not fixed in advance.",
+         ("so it's not fully immune to a 'why 20?' challenge — though the IC was null anyway, "
+          "so there was nothing to tune.", 1),
+         "Each daily window used only stocks that survived it.",
+         ("stocks delisted/merged mid-window are dropped → mild survivorship bias.", 1)],
+        lead="Where this isn't airtight — in plain terms.",
     )
 
     # 22 — what's next (pivot away from return prediction, since H2 failed)

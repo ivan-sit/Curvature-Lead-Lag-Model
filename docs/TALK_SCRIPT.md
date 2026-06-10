@@ -127,11 +127,16 @@ it helped me **research** the idea — surveying the curvature and lead-lag lite
 pipeline. Second, and most importantly, it helped me **link curvature to lead-lag networks** — connect
 the graph-geometry side to the finance side. The framing and the judgment stayed human. That's it."
 
-### Slide 21 — Limitations  (~55s)
-"Limitations, plainly. Intraday is 2019 only, by cost. The network is triangle-sparse, which limits
-community methods. The directed line-graph and directed curvature-gap are theoretically open, so I
-use the undirected reduction. IC is at a fixed k, not pre-registered. And the daily universe is
-survivor-biased within each window."
+### Slide — Limitations  (~70s)
+"Four honest limitations. **One:** intraday is only 2019 — 25 years of 30-minute TAQ would be over
+a hundred hours of pulls, so the long span is the daily data. **Two:** the clustering step is weak,
+because the network has too few *triangles* — and you need triangles to find communities, since a
+tight cluster has many and a bridge has almost none; ours are too sparse to separate cleanly, so I
+don't lean on that step. **Three:** the prediction test used the top-20 pairs, and I didn't lock
+'20' in beforehand — so strictly it's open to a 'why 20?' question, though the IC came out null
+anyway, so there was nothing to tune. **Four:** in each daily window I only kept stocks that
+survived the whole window, so names that delisted or merged mid-window are under-counted — a mild
+survivorship bias."
 
 ### Slide — What's next  (~55s)
 "The key thing: H2 failed — curvature doesn't forecast returns — so the honest move is to pivot to
