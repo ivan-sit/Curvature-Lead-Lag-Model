@@ -37,3 +37,26 @@ correlation version**. This is consistent with the project's spine: structure ye
 (H1), prediction no (H2) — and now, fragility-tracking yes, but not uniquely.
 
 Further searching past this point would be p-hacking; the negative is the result.
+
+## Round 4 — diversification (risk application) + the unifying reason
+
+| Portfolio (OOS, equal-weight, monthly) | vol all | dd all | vol crisis | dd crisis |
+|---|---|---|---|---|
+| correlation (min-corr) | 0.160 | -0.040 | 0.620 | -0.161 |
+| structural (lead-lag communities) | 0.166 | -0.041 | 0.667 | -0.168 |
+| random | 0.169 | -0.043 | 0.578 | -0.142 |
+
+Structural diversification is slightly WORSE than correlation diversification, overall
+and in crises. Null.
+
+**The unifying reason (why all 13 tests are null):** portfolio risk / diversification
+is the covariance matrix, which *is* correlation; return prediction isn't topology.
+Every standard financial objective is covariance- or return-determined, and curvature's
+unique information is *topological* — orthogonal to those objectives. So curvature
+cannot beat correlation at any of them by construction.
+
+## Final conclusion
+Curvature's value is **descriptive / structural, not optimization**: mapping hidden
+cross-sector wiring, flagging specific critical links for stress-testing, detecting
+structural regime change. It is a market-structure microscope, not an alpha or risk
+engine. (Tested across 13 targets; topology ⟂ covariance.) Stop here — more is p-hacking.
