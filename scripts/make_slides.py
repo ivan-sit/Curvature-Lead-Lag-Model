@@ -228,7 +228,7 @@ def _arrow(slide, kind, x, y, w, h):
 
 
 def pipeline_slide(prs, idx, section, title, stages, lead=None):
-    """Six-stage pipeline as a snake flow chart (3 top L->R, 3 bottom R->L)."""
+    """Snake flow chart, 3 boxes per row (top L->R, bottom R->L). Handles 5 or 6."""
     s = _blank(prs)
     _, tf = _box(s, ML, TITLE_TOP, CW, Inches(0.9))
     p = tf.paragraphs[0]
@@ -241,22 +241,31 @@ def pipeline_slide(prs, idx, section, title, stages, lead=None):
         _set(rr, 18, ACCENT, italic=True)
     bw, bh = Inches(3.3), Inches(1.1)
     xs = [ML, Inches(4.6), Inches(8.35)]
+    arrow_x = {0: Inches(4.18), 1: Inches(7.93)}  # gap after col 0 / col 1
     ytop, ybot = Inches(2.55), Inches(4.75)
     ah = Inches(0.34)
+    n = len(stages)
+    row0, row1 = stages[:3], stages[3:]
+    last_col = len(row0) - 1
+
     # top row, left -> right
-    for k in range(3):
-        _flowbox(s, xs[k], ytop, bw, bh, stages[k][0], stages[k][1])
-    _arrow(s, MSO_SHAPE.RIGHT_ARROW, Inches(4.18), ytop + Inches(0.38), Inches(0.42), ah)
-    _arrow(s, MSO_SHAPE.RIGHT_ARROW, Inches(7.93), ytop + Inches(0.38), Inches(0.42), ah)
-    # down on the right
-    _arrow(s, MSO_SHAPE.DOWN_ARROW, Inches(9.83), Inches(3.7), ah, Inches(1.0))
-    # bottom row, right -> left (so the flow continues 4 -> 5 -> 6)
-    bottom_x = [Inches(8.35), Inches(4.6), ML]
-    for k in range(3):
-        _flowbox(s, bottom_x[k], ybot, bw, bh, stages[3 + k][0], stages[3 + k][1],
-                 accent=(3 + k == 5))
-    _arrow(s, MSO_SHAPE.LEFT_ARROW, Inches(7.93), ybot + Inches(0.38), Inches(0.42), ah)
-    _arrow(s, MSO_SHAPE.LEFT_ARROW, Inches(4.18), ybot + Inches(0.38), Inches(0.42), ah)
+    for k, st in enumerate(row0):
+        _flowbox(s, xs[k], ytop, bw, bh, st[0], st[1])
+    for k in range(len(row0) - 1):
+        _arrow(s, MSO_SHAPE.RIGHT_ARROW, arrow_x[k], ytop + Inches(0.38), Inches(0.42), ah)
+
+    if row1:
+        # down arrow from the last top box to the box directly below it
+        cx = xs[last_col] + bw / 2 - Inches(0.17)
+        _arrow(s, MSO_SHAPE.DOWN_ARROW, cx, Inches(3.7), ah, Inches(1.0))
+        # bottom row, right -> left under the top row
+        for j, st in enumerate(row1):
+            col = last_col - j
+            _flowbox(s, xs[col], ybot, bw, bh, st[0], st[1], accent=(j == len(row1) - 1))
+        for j in range(len(row1) - 1):
+            col = last_col - j          # arrow sits in the gap to the left of `col`
+            _arrow(s, MSO_SHAPE.LEFT_ARROW, arrow_x[col - 1], ybot + Inches(0.38),
+                   Inches(0.42), ah)
     _footer(s, idx, section)
     return s
 
@@ -408,10 +417,9 @@ def build():
         [("Residualize returns", "remove market + sector"),
          ("Directed lead-lag network", "BCR signed statistic"),
          ("Four curvature objects", "plain → weighted aug. directed"),
-         ("Line graph  L(G)", "curvature pair-communities"),
          ("Validation cascade", "curvature ≠ corr / degree?"),
          ("Structurally isolated pairs", "the structural output")],
-        lead="Six stages, fully automated.",
+        lead="Five stages, fully automated.",
     )
 
     # 7 — residualized lead-lag (+ explicit horizons)

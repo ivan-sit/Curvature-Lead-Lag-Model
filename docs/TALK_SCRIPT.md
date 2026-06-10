@@ -46,10 +46,11 @@ weight. And Tian-Lubberts-Weber give line-graph curvature clustering, which I us
 The **gap**: nobody has put directed curvature on a *residualized lead-lag* graph. That's the
 contribution."
 
-### Slide 7 — The pipeline  (~65s)
-"The machinery — six automated stages. Residualize returns; build the directed lead-lag network;
-compute four curvature objects; build the line graph and pair-communities; run the validation
-cascade; out come the structurally isolated pairs. It runs end-to-end without me in the loop."
+### Slide 7 — The pipeline  (~60s)
+"The machinery — five automated stages. Residualize returns; build the directed lead-lag network;
+compute four curvature objects; run the validation cascade; out come the structurally isolated
+pairs. It runs end-to-end without me in the loop. (There's also a line-graph / pair-clustering step
+in the code, but it didn't carry the result — I'll mention it under limitations.)"
 
 ### Slide 8 — Step 1: Residualized, directed network  (~70s)
 "Two key choices. I residualize *before* building the graph — otherwise market and sector dominate
