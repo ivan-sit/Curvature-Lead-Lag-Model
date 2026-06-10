@@ -96,11 +96,12 @@ pure baseline, and proof the test is calibrated. But augmented Forman is 0.56 in
 — so **44 to 82 percent** is *not* degree. That extra is the triangle term — real higher-order
 structure, at both horizons."
 
-### Slide 16 — H1: The network is triangle-sparse  (~55s)
-"One honest finding. The network is **triangle-sparse**, and only ~1% of triangles are within a
-GICS sector. Two consequences: community separability is intrinsically limited there — I'm careful
-about that — and the structure curvature finds is **cross-sector**, which a sector view would miss.
-A finding, not a bug."
+### Slide — H1: The structure is cross-sector  (~55s)
+"So where do the pairs curvature picks actually live? Almost entirely **across** sectors — only
+about 1% of the network's triangles sit inside a single GICS sector. So the relationships curvature
+highlights are **cross-sector** links — exactly what a sector- or correlation-based grouping would
+never put together. That's the kind of structure this method is *for*. One honest caveat: with so
+few within-group triangles, the community-detection step can't cleanly carve out clusters."
 
 ### Slide 17 — H2: The predictive test, both horizons  (~80s)
 "The hard question — does it *predict*? Out-of-sample directional IC. Intraday 2019: Forman leads

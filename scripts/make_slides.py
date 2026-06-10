@@ -545,13 +545,14 @@ def build():
 
     # 14 — H1 result 3: triangle sparsity
     content_slide(
-        prs, nx(), "Results — H1", "The network is triangle-sparse",
-        ["Most edges have few common-neighbor triangles; strict cyclic triangles ≈ 0.",
-         "Only ~1% of triangles fall within a GICS sector.",
-         "Two honest consequences:",
-         ("AFRC community separability is intrinsically limited (Fesser–Weber–Lambiotte).", 1),
-         ("The structure curvature surfaces is cross-sector — not aligned with GICS.", 1)],
-        lead="A finding, not a bug.",
+        prs, nx(), "Results — H1", "The structure is cross-sector",
+        ["Almost all of the network's triangle structure spans sectors —",
+         ("only ~1% of triangles sit within a single GICS sector.", 1),
+         "So the relationships curvature highlights are cross-sector links — exactly what "
+         "a sector- or correlation-based grouping would not surface.",
+         "Honest caveat: with so few within-group triangles, the community step can't "
+         "cleanly carve out clusters."],
+        lead="Where do the pairs curvature picks actually live?",
     )
 
     # 15 — H2 result: the predictive test (IC), BOTH horizons
