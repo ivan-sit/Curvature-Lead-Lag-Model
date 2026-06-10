@@ -504,9 +504,10 @@ def build():
         ["Test", "Intraday\n2019", "Daily\n2000–24", "What it means"],
         [["Top-K Jaccard vs correlation", "≈ 0.0", "0.0", "near-disjoint pair sets"],
          ["Spearman(F, |ρ|)", "0.18", "0.07", "barely tracks |ρ|  (≪ 0.8)"]],
-        lead="The pairs curvature flags are not the pairs correlation flags — at both horizons.",
-        note="Significance: curvature is not a re-skin of correlation. Holds on the 2019 intraday "
-             "graph AND the full 2000–2024 daily span. This distinctness IS the headline result.",
+        lead="Our main object (weighted augmented directed Forman) vs. correlation — both horizons.",
+        note="F = the main object. Significance: curvature is not a re-skin of correlation — it holds "
+             "on the 2019 intraday graph AND the full 2000–2024 daily span. This distinctness IS the "
+             "headline result. (The next slide compares all four objects to each other.)",
         col_widths=[Inches(3.7), Inches(1.9), Inches(2.0), Inches(4.0)],
         align=["l", "c", "c", "l"],
         highlight_rows=(0, 1),
@@ -592,17 +593,6 @@ def build():
         lead="The paper stands on H1. H2 is reported transparently — across 25 years.",
     )
 
-    # 18 — robustness & ablations
-    content_slide(
-        prs, nx(), "Robustness", "Robustness & ablations",
-        ["Four-object ablation: plain (degree baseline) → augmented → weighted-directed → Ollivier.",
-         "Two horizons: intraday 30-min (2019) and daily close-to-close (2000–2024).",
-         "25-year walk-forward: 21 rolling windows, not a single train/test split.",
-         "Five baselines: correlation, cointegration, random, undirected Forman, Ollivier.",
-         "Triangle convention (common-neighbor vs strict-cyclic) settled by the data."],
-        lead="The result is stress-tested, not cherry-picked.",
-    )
-
     # 19 — agentic AI workflow (single, concise)
     content_slide(
         prs, nx(), "Agentic AI", "Agentic AI workflow",
@@ -625,16 +615,16 @@ def build():
         lead="Stated plainly — these shape what we can and can't claim.",
     )
 
-    # 22 — what's next (active work + submission)
+    # 22 — what's next (pivot away from return prediction, since H2 failed)
     content_slide(
         prs, nx(), "What's next", "What's next",
-        ["Multi-regime intraday robustness — pulling 2008 / 2015 / 2020 to join 2019 "
-         "(crash, calm, COVID).",
-         "Agentic propose→test→reject orchestrator (built) — logs every accept/reject; "
-         "the residualization ladder (market / sector / PCA) runs through it.",
-         "Directed line-graph & directed curvature-gap theory (open; possible Weber collaboration).",
+        ["Curvature as a fragility / systemic-risk signal — Sandhu's original result was "
+         "curvature rising before crashes; bring that to the directed graph.",
+         "Regime shifts: does the cross-sector structure change around stress? The 2008 & "
+         "2020 intraday pulls feed exactly this.",
+         "Directed line-graph & curvature-gap theory (open; possible Weber collaboration).",
          "Extend to an 8-page ACM sigconf — ICAIF 2026, deadline Aug 2."],
-        lead="Underway now.",
+        lead="H2 failed — so pivot from forecasting returns to what curvature is strong at: structure.",
     )
 
     # 23 — project status overview

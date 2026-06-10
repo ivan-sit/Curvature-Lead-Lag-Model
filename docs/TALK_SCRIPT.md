@@ -87,10 +87,12 @@ intraday is the high-frequency cross-check; daily is the long backbone."
 "So — two hypotheses, two answers."
 
 ### Slide 14 — H1: Curvature is not correlation  (~65s)
-"Distinctness, both horizons. The overlap between curvature-picked and correlation-picked pairs is
-essentially **zero**. The rank correlation between curvature and absolute correlation is 0.18
-intraday, 0.07 daily — both far below 0.8. So curvature's isolated pairs are *not* correlation's
-co-moving pairs, and that holds across 25 years. This is the headline."
+"Distinctness, both horizons — and this is for our **main object**, the weighted augmented directed
+Forman. The overlap between curvature-picked and correlation-picked pairs is essentially **zero**.
+The rank correlation between curvature and absolute correlation is 0.18 intraday, 0.07 daily — both
+far below 0.8. So curvature's isolated pairs are *not* correlation's co-moving pairs, and that holds
+across 25 years. This is the headline. *(On the next slide I'll compare all four objects to each
+other — here I'm just establishing the main one is distinct from correlation.)*"
 
 ### Slide 15 — H1: A clean degree ablation  (~65s)
 "Is curvature just degree? Plain Forman regresses on degree with R-squared exactly **one** — the
@@ -121,13 +123,7 @@ years while correlation wins. And note: even where H1 holds, undirected ties dir
 prediction — directedness is *structurally* informative, not *predictively*. The paper stands on
 H1; I report H2's null transparently."
 
-### Slide 19 — Robustness & ablations  (~55s)
-"This is stress-tested. The four-object ablation isolates where signal comes from; two horizons;
-a 21-window walk-forward rather than one split; five baselines including correlation,
-cointegration, and undirected Forman; and I settled the triangle convention with the data, not by
-assumption."
-
-### Slide 20 — Agentic AI workflow  (~55s)
+### Slide — Agentic AI workflow  (~55s)
 "Since this is the agentic-AI course — where the tools actually helped. Two things, simply. First,
 it helped me **research** the idea — surveying the curvature and lead-lag literature, and coding the
 pipeline. Second, and most importantly, it helped me **link curvature to lead-lag networks** — connect
@@ -139,15 +135,14 @@ community methods. The directed line-graph and directed curvature-gap are theore
 use the undirected reduction. IC is at a fixed k, not pre-registered. And the daily universe is
 survivor-biased within each window."
 
-### Slide 22 — What's next  (~60s)
-"What's underway right now. First, **multi-regime intraday robustness** — I'm pulling 2008, 2015,
-and 2020 to join 2019, so I can check the intraday results across a crash, a calm year, and COVID.
-Second, the **agentic propose-test-reject orchestrator** is now built: it sweeps the residualization
-ladder — market, sector, PCA — times threshold times curvature object, runs the structural cascade
-on each, and logs every accept and reject. It genuinely discriminates — it rejects plain Forman as a
-degree baseline and accepts the augmented object, and H1 holds under all three residualizations.
-Then the open theory — directed line-graph and curvature-gap — and extending to an 8-page ACM
-sigconf for **ICAIF 2026, deadline August 2**."
+### Slide — What's next  (~55s)
+"The key thing: H2 failed — curvature doesn't forecast returns — so the honest move is to pivot to
+what curvature is actually *strong* at: structure. First, **fragility / systemic-risk monitoring** —
+Sandhu's original result was that curvature *rises before crashes*; the natural next step is to bring
+that to the directed graph. Second, **regime shifts** — does the cross-sector structure change around
+stress? The 2008 and 2020 intraday pulls I'm running feed exactly that question. Then the open theory
+— directed line-graph and curvature-gap — and extending to an 8-page ACM sigconf for **ICAIF 2026,
+deadline August 2**."
 
 ### Slide 23 — Project Status Overview  (~45s)
 "Where things stand. **Completed**: the full pipeline and 52 tests, the four curvature objects, the
