@@ -134,12 +134,15 @@ community methods. The directed line-graph and directed curvature-gap are theore
 use the undirected reduction. IC is at a fixed k, not pre-registered. And the daily universe is
 survivor-biased within each window."
 
-### Slide 22 — Future work & submission  (~55s)
-"Future work. Point the same directed-curvature tools at *other* market graphs, beyond lead-lag.
-Develop the directed line-graph and curvature-gap theory — possibly with Melanie Weber. If I
-revisit prediction, do it as a pre-registered confirmatory test. And the big deferred-by-cost
-experiment is multi-year intraday. Target: extend to an 8-page ACM sigconf for **ICAIF 2026,
-deadline August 2**."
+### Slide 22 — What's next  (~60s)
+"What's underway right now. First, **multi-regime intraday robustness** — I'm pulling 2008, 2015,
+and 2020 to join 2019, so I can check the intraday results across a crash, a calm year, and COVID.
+Second, the **agentic propose-test-reject orchestrator** is now built: it sweeps the residualization
+ladder — market, sector, PCA — times threshold times curvature object, runs the structural cascade
+on each, and logs every accept and reject. It genuinely discriminates — it rejects plain Forman as a
+degree baseline and accepts the augmented object, and H1 holds under all three residualizations.
+Then the open theory — directed line-graph and curvature-gap — and extending to an 8-page ACM
+sigconf for **ICAIF 2026, deadline August 2**."
 
 ### Slide 23 — Project Status Overview  (~45s)
 "Where things stand. **Completed**: the full pipeline and tests, the four curvature objects, the
