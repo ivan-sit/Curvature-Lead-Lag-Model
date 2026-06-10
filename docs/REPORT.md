@@ -226,7 +226,41 @@ and **correlation does best** (CI excludes zero, positive). The intraday-2019 "F
 and on the long daily span it actively underperforms correlation. We do not tune universes,
 windows, or `k` to manufacture significance; the structural claim (H1) stands on its own.
 
-## 7. Discussion and implications
+## 7. Agentic AI workflow
+
+This project was built as an exercise in **agentic, autonomous research** (Math 285J). An LLM agent
+(Claude Code) drove most of the loop; the human set the framing and the scientific judgment calls.
+
+**Where agentic AI was used.**
+- *Coding & tests* — the agent built the entire six-module pipeline (`cllm`: residualization, BCR
+  lead-lag, the four curvature objects, line graph, validation cascade, evaluation) with 50 passing
+  unit tests, including synthetic kill-switches (directed-SBM recovery; triangle-density gate).
+- *Data acquisition* — autonomous WRDS pulls (CRSP daily, Compustat GICS, TAQ 30-min), with a
+  resumable, checkpointed TAQ loader.
+- *Debugging* — the agent diagnosed and fixed non-obvious failures: a TAQ `array_agg` query that
+  silently overflowed server-side memory on high-volume days (fixed with `DISTINCT ON`), a
+  `.gitignore` rule that had left the entire data-loader module untracked, and a NaN-propagation
+  bug that produced a complete graph and hung the triangle counter.
+- *Experiment design* — the within-day lead-lag estimator, the two-horizon design, and the
+  21-window walk-forward were proposed and implemented by the agent.
+- *Visualization & writing* — this report, the slide deck (generated programmatically via
+  `python-pptx`), and the talk script.
+
+**What worked, what failed, what needed a human.** The agent was strong at the *building* —
+end-to-end pipeline construction, autonomous data engineering, self-caught bugs, and large
+walk-forward sweeps. The decisions that required a **human** were the *framing* ones: reframing the
+project from a predictive (PnL/IC) story to a **structural** one after the empirics; the discipline
+to **not** p-hack universes/windows/`k` toward a significant predictive result; and the domain
+judgment on horizons, coverage, and how to interpret an honest null.
+
+**What would have been impossible or substantially slower without agentic AI.** The full
+build–pull–experiment–write loop — implementing and testing a six-module curvature pipeline, pulling
+25 years of CRSP plus a full year of intraday TAQ, running a 21-window walk-forward with the
+structural cascade at each step, and producing a report, deck, and talk script — was compressed from
+months into days. The data-engineering alone (resumable TAQ at scale, the `DISTINCT ON` fix) would
+have consumed most of a manual timeline.
+
+## 8. Discussion and implications
 
 1. **A new structural lens.** Forman curvature on directed, residualized lead-lag networks
    surfaces pair structure that correlation, degree, and undirected curvature do not — a clean,
@@ -241,23 +275,26 @@ windows, or `k` to manufacture significance; the structural claim (H1) stands on
    a structural curvature study in finance is publishable without a backtest; this work follows
    it and reports the predictive null transparently.
 
-## 8. Limitations
-- Single headline year (2019 intraday) for the main result; multi-year/multi-frequency replication
-  is future work.
+## 9. Limitations
+- Intraday is **2019 only** (TAQ pull cost); the daily analysis spans the full 2000–2024. A
+  multi-year intraday panel is the main deferred-by-cost experiment.
 - The directed line-graph construction and a directed AFRC curvature gap are theoretically open
   (the Tian–Lubberts–Weber and Fesser–Weber–Lambiotte frameworks are undirected); we use the
   undirected reduction as an honest baseline.
-- IC is evaluated at fixed `k`; a pre-registered `k` would further harden the (null) predictive
-  claim.
+- The lead-lag network is triangle-sparse, which intrinsically limits AFRC community separability.
+- IC is evaluated at fixed `k = 20`; a pre-registered `k` would further harden the (null) claim.
+- The daily universe is survivor-biased within each window (continuous-presence filter).
 
-## 9. Future work
+## 10. Future work and submission
+- Apply the directed-curvature toolkit **beyond lead-lag** — other market graphs and relations.
 - Directed line-graph and directed AFRC-gap theory (candidate collaboration with M. Weber).
 - Multi-frequency replication (daily ↔ 30-min ↔ 5-min Hayashi-Yoshida) and curvature dynamics
   through 2020 stress.
-- If a predictive angle is ever revisited, treat it as a pre-registered confirmatory test, not an
-  exploratory sweep.
+- If a predictive angle is revisited, treat it as a pre-registered confirmatory test, not a sweep.
+- **Submission:** extend this to an 8-page ACM `sigconf` paper targeting **ICAIF 2026 (deadline
+  August 2, 2026)**. Bibliography to be expanded to 20–25 references for the final version.
 
-## 10. Reproducibility
+## 11. Reproducibility
 The full pipeline is open-source (`github.com/ivan-sit/Curvature-Lead-Lag-Model`, package `cllm`):
 residualization, BCR lead-lag, the four curvature objects, the line graph, the validation cascade,
 and the evaluation harness, with 50 passing tests, synthetic kill-switch A (directed-SBM recovery)
