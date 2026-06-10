@@ -422,7 +422,8 @@ def build():
          "Edge weight = BCR signed lead-lag:  w(i→j) = ρ_ij(τ*) − ρ_ji(τ*).",
          ("τ* = the lag of peak signal, picked per pair; the candidate horizons are on "
           "the next slide.", 1),
-         "Intraday: within-day estimator (lag pairs never cross the overnight gap)."],
+         "Two time horizons: daily close-to-close, and intraday 30-min.",
+         ("Intraday uses a within-day estimator — lag pairs never cross the overnight gap.", 1)],
     )
 
     # 8 — four objects (with plain-language "what it measures")
