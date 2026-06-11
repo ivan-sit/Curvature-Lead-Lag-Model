@@ -85,3 +85,12 @@ links are cross-sector, where the bridges live). Curvature is a structural-DISCO
 risk/return optimizer. This is the positive, non-covariance, ICAIF-anchor result.
 Caveat: absolute counts modest, name-matching coarse (undercounts links); enrichment direction is
 robust and significant at top-300/500.
+
+## Round 7 — alpha path (closed)
+Cohen-Frazzini link momentum (monthly, raw returns, 221-name universe):
+  (1) REAL customer-supplier links: +2.5%/yr, t=1.22 (weak — effect lives in small-caps, not large)
+  (2) curvature-discovered bridges: +0.5%/yr, t=0.30 (diluted)
+  (3) all cross-sector edges:       +0.0%/yr, t=0.03
+=> No tradeable alpha: the underlying momentum is weak in large-caps AND curvature's discovery is
+too sparse to isolate it. Curvature's contribution = structural DISCOVERY (significant link
+recovery, p=0.006), NOT alpha. Final, consistent.

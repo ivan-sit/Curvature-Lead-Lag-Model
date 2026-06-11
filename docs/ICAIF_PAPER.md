@@ -1,167 +1,134 @@
-# Autonomous Agentic Research in Quantitative Finance:
-## A Self-Skeptical Case Study in Directed-Curvature Market Structure
+# Curvature Sees What Correlation Cannot:
+## Directed Ricci Curvature Recovers Cross-Sector Economic Links in Equity Markets
 
-*(ICAIF 2026 draft — agentic-AI-forward framing. ACM `sigconf`, 8 pages. Deadline Aug 2.)*
+*(ICAIF 2026 draft — math/structural-forward, positive-led. ACM `sigconf`, 8 pages. Deadline Aug 2.)*
 
 ---
 
 ## Abstract  *(self-contained)*
 
-We present an **agentic AI system that autonomously conducts a complete quantitative-finance
-research program** — hypothesis formation, pipeline construction, institutional-data acquisition,
-statistical validation, and a self-directed *propose → test → reject* experiment loop — and use it
-to deliver a rigorous case study on the geometry of US equity markets. The agent builds **directed
-lead-lag networks** of S&P 500 stocks from **factor-residualized** returns and analyzes them with
-**discrete Forman–Ricci curvature** (the **CRISP** object: Curvature of Residualized, Signed
-lead-lag Pairs). It establishes a **positive structural result**: curvature-selected pairs are
-statistically distinct from those surfaced by correlation, degree, or undirected-curvature methods
-(top-K Jaccard ≈ 0; Spearman ≈ 0.1, ≪ 0.8), and the structure it reveals is overwhelmingly
-**cross-sector** — relationships a sector- or correlation-based view is structurally blind to. The
-agent then subjects the construction to an **exhaustive battery of fourteen candidate applications**
-— directional return prediction, realized- and implied-volatility (VIX) forecasting, drawdown, tail
-risk, contagion, fundamentals (EPS), and portfolio diversification — and reports an **honest,
-comprehensive negative**: across all of them, curvature provides no edge beyond plain
-correlation/volatility, with every test partial-controlled so only signal *beyond* correlation
-counts. We give a **principled explanation**: standard financial objectives are
-**covariance-determined**, whereas curvature's unique information is **topological**, so the two are
-orthogonal. The contribution is twofold: **(i)** a demonstration of agentic AI performing
-rigorous, *self-skeptical* autonomous research in finance — including the discipline to reject its
-own hypotheses and explain *why* — and **(ii)** a clean characterization of what network curvature
-can and cannot do for markets: **a structural microscope, not an alpha or risk engine.**
+We introduce **CRISP** — directed, weighted, augmented **Forman–Ricci curvature** on
+**factor-residualized** equity **lead-lag networks** — and show it recovers **economic structure
+that correlation-based methods are structurally blind to.** On US equities (2000–2024, institutional
+WRDS data), curvature selects pairs that are statistically distinct from correlation-, degree-, and
+undirected-curvature selection (top-K Jaccard ≈ 0; Spearman(F,|ρ|) ≈ 0.1 ≪ 0.8), and that structure
+is **overwhelmingly cross-sector**. Our **central positive result:** the cross-sector pairs curvature
+flags as negatively-curved *bridges* are **significantly enriched for real customer–supplier links
+(3.7×, p = 0.006**, from Compustat segment disclosures**)**, while top-correlation pairs capture
+**essentially none** — because correlation favors *within*-sector co-movers, whereas genuine economic
+links span sectors, exactly where the bridges live. We then **characterize the limits:** across
+fourteen covariance- or return-determined objectives (directional return prediction, realized- and
+implied-volatility (VIX) forecasting, drawdown, tail risk, contagion, fundamentals, diversification),
+curvature adds **no edge beyond correlation**. We give the unifying principle — **topology ⊥
+covariance:** standard financial objectives are covariance-determined, so curvature's purely
+*topological* information cannot improve them. The conclusion is sharp and useful: **curvature's value
+is structural *discovery*, not optimization — a microscope for the market's hidden economic wiring,
+not an alpha or risk engine.**
 
 ---
 
 ## 1. Introduction
 
-- **The shift ICAIF is undergoing:** from bespoke models to **agentic systems** (LLM agents,
-  multi-agent workflows, autonomous research loops). The open question is not "can an agent generate
-  ideas?" but "can an agent run a *rigorous, self-correcting* research program — and not fool
-  itself?"
-- **Our system** is a concrete answer: an agent that took a finance hypothesis end-to-end —
-  literature framing, code, WRDS data, validation, ~14 experiments — and, crucially, **rejected the
-  hypotheses that did not survive**, with logged reasons.
-- **Why curvature / lead-lag as the testbed:** geometry gives a parameter-free structural lens
-  (Sandhu 2016; Samal 2021); the **directed** lead-lag extension on **residualized** returns is
-  novel; and the domain is rich enough to stress-test the agent's rigor.
+- **Question:** correlation networks are the standard lens on equity co-movement. Does the *geometry*
+  of a *directed* network — who leads whom — encode structure correlation cannot?
+- **Answer (this paper):** yes, and specifically **economic** structure. Curvature's cross-sector
+  bridges recover **real customer–supplier links** that correlation never surfaces.
+- **Why it had been missed:** prior curvature-in-finance work (Sandhu 2016; Samal 2021) used
+  *undirected correlation* networks and aggregate fragility; we use *directed, residualized lead-lag*
+  networks and validate the structure against *external economic ground truth*.
 - **Contributions:**
-  1. An **agentic research pipeline** (6 stages + a propose→test→reject orchestrator) that runs the
-     full loop autonomously, with auditable accept/reject logs and pinned provenance.
-  2. A **positive structural finding (H1):** directed-curvature pairs are distinct from
-     correlation/degree/undirected selection and live cross-sector.
-  3. A **rigorous negative (H2 + 12 applications):** curvature adds no predictive or optimization
-     value over correlation, and a **principled reason** (topology ⊥ covariance).
-  4. A **methodological lesson** for agentic finance research: the agent's value is *honest
-     filtering*, not idea generation.
+  1. **CRISP**, a directed/weighted/augmented Forman-curvature object on residualized lead-lag
+     networks (§4), with a clean four-object ablation.
+  2. **Structural distinctness (H1):** curvature selection is near-disjoint from correlation/degree/
+     undirected (Jaccard ≈ 0) and cross-sector (§6.1).
+  3. **The positive result:** curvature bridges are **significantly enriched for real customer–
+     supplier links** (3.7×, p = 0.006); correlation pairs capture none (§6.2).
+  4. **A characterization of the limits + the principle:** topology ⊥ covariance explains why
+     curvature adds nothing to fourteen covariance/return objectives (§6.3–6.4).
+  5. *(Optional methodology note, §3):* the entire study was executed by an **autonomous research
+     agent** with a propose→test→reject loop and explicit anti-p-hacking discipline.
 
 ## 2. Related work
 
-- **Curvature in finance:** Sandhu, Georgiou, Tannenbaum (2016, *Sci. Adv.*) — Ollivier-Ricci on
-  *undirected correlation* nets as a fragility indicator; Samal et al. (2021, *R.Soc.Open Sci.*,
-  "Network geometry and market instability") — Forman-Ricci tracks volatility/fragility best among
-  curvature measures. **We extend to directed lead-lag on residualized returns and test predictive
-  use exhaustively.**
-- **Lead-lag estimation:** Bennett, Cucuringu, Reinert (2022) signed lead-lag statistic (adopted as
-  the edge weight); Cartea-Cucuringu-Jin lead-lag clustering; Lu et al. overnight/daytime "tug of
-  war."
-- **Discrete curvature:** Forman (2003); Sreejith-Jost-Saucan-Samal (directed); Samal (weighted/
-  augmented); Tian-Lubberts-Weber (line-graph clustering); Fesser-Weber-Lambiotte (AFRC gap).
-- **Agentic AI in finance (ICAIF lineage):** LLM agents for investment management; agentic
-  time-series workflows (TS-Agent); agent-based asset pricing (AAPM); FinRobot; multi-agent
-  reflection. **Our novelty vs these: an agent that runs a *full empirical research program with
-  rigorous negative-result discipline*, not a trading/QA agent.**
-- **The gap:** nobody has (a) put directed curvature on a residualized lead-lag graph, nor (b)
-  demonstrated an agent that autonomously establishes *and honestly bounds* a finance hypothesis.
+- **Curvature in finance:** Sandhu-Georgiou-Tannenbaum (2016, *Sci. Adv.*) — Ollivier-Ricci on
+  undirected correlation nets, aggregate fragility; Samal et al. (2021) — Forman-Ricci tracks
+  volatility best. **We extend to directed/residualized lead-lag and add external economic validation.**
+- **Economic-link / network return structure:** Cohen-Frazzini (2008) customer-supplier momentum;
+  Ahern (2013) network-centrality premium; supply-chain centrality & returns (2024). **We test these
+  on our network (null) and explain why (topology ⊥ covariance), while recovering the links themselves.**
+- **Lead-lag:** Bennett-Cucuringu-Reinert (2022) signed statistic (our edge weight); Cartea-Cucuringu-Jin;
+  Lu et al. (overnight/daytime).
+- **Discrete curvature:** Forman (2003); Sreejith et al. (directed); Samal (weighted/augmented);
+  Tian-Lubberts-Weber (line graph); Fesser-Weber-Lambiotte (AFRC gap).
+- **Gap we fill:** nobody has (a) put directed curvature on a residualized lead-lag graph, nor
+  (b) validated curvature-discovered structure against disclosed economic links.
 
-## 3. The agentic research system  *(the ICAIF methodological core)*
+## 3. Method — CRISP  *(+ optional agentic-execution note)*
 
-- **Two-layer design** (decision vs execution): a human/decision layer sets goals and accept/reject
-  criteria; an autonomous execution layer builds, runs, and judges.
-- **Six-stage pipeline:** residualize → directed lead-lag (BCR) → four curvature objects →
-  (line-graph, opt-in) → validation cascade → selected structure.
-- **Propose → test → reject orchestrator:** proposes candidate signals over a grid (residualization
-  × threshold × curvature object), runs the structural cascade, accepts/rejects with logged reasons.
-  *Result it produced:* rejects plain Forman (R²-on-degree = 1.00, pure degree) every time, accepts
-  augmented (0.45–0.67); H1 robust across market/sector/PCA residualizations.
-- **Self-skepticism mechanisms:** strict train/validate/test; partial-controls on every predictive
-  test (credit only signal beyond correlation/vol); BH multiplicity; explicit *stop rule* to prevent
-  p-hacking; auditable findings log (`CURVATURE_IMPLICATIONS.md`).
-- **Reproducibility:** open-source (`cllm`, 52 tests), WRDS pull scripts, pinned data/seeds/commit.
-- **Where the agent worked vs needed a human:** built/tested/debugged/data-engineered autonomously;
-  the *framing* (structural vs predictive) and the *discipline not to over-search* were human-set.
-
-## 4. Method — CRISP
-
-- **Residualize first (§4.1):** remove market + leave-one-out sector (and PCA, as ablation) so the
-  signal is idiosyncratic, not rediscovered GICS.
-- **Directed lead-lag graph (§4.2):** edge weight = BCR signed statistic
-  `w(i→j) = ρ_ij(τ*) − ρ_ji(τ*)`, `ρ_ij(τ)=corr(r_i[t], r_j[t+τ])`; sparsify to strongest ~10%;
-  within-day estimator for intraday.
-- **Four curvature objects (§4.3, the ablation spine):** plain directed Forman (degree baseline) →
-  weighted → **weighted augmented directed (main)** → Ollivier-Ricci (contrast). The main object is
-  the only one that is simultaneously directed, weighted, and higher-order (triangle-augmented),
-  at ~0 cost vs Ollivier's 600×.
-- **Validation cascade (§4.4):** Spearman(F,|ρ|), top-K Jaccard, config-model null, residual
+- **Residualize first (§3.1):** remove market + leave-one-out sector (PCA as ablation) so signal is
+  idiosyncratic, not rediscovered GICS.
+- **Directed lead-lag graph (§3.2):** edge weight = BCR signed statistic
+  `w(i→j)=ρ_ij(τ*)−ρ_ji(τ*)`, `ρ_ij(τ)=corr(r_i[t], r_j[t+τ])`; keep strongest ~10%; within-day
+  estimator intraday.
+- **Four curvature objects (§3.3):** plain (degree baseline, R²-on-degree = 1) → weighted →
+  **weighted augmented directed (main)** → Ollivier (600× cost contrast). Augmentation = +3·(triangles);
+  the main object carries 44–82% non-degree signal.
+- **Validation cascade (§3.4):** Spearman(F,|ρ|), top-K Jaccard, config-model null, residual
   orthogonalization; BH; train/val/test.
+- *(Optional §3.5 — agentic execution):* an autonomous agent ran the full loop (build, WRDS pulls,
+  validate, a propose→test→reject orchestrator that auto-rejects degree baselines), with a stop-rule
+  against p-hacking and partial-controls on every predictive test. A reproducibility + honesty asset.
 
-## 5. Data  *(all WRDS / institutional)*
+## 4. Data  *(all WRDS / institutional)*
+CRSP daily S&P 500 (2000–2024, survivorship-correct); TAQ 30-min intraday (2019 + 2008/2015/2020);
+Compustat GICS sectors **and customer-supplier segments** (`wrds_seg_customer`) **and** quarterly EPS;
+CBOE/WRDS spot VIX (`cboe.cboe`).
 
-- **CRSP** daily S&P 500, 2000–2024 (survivorship-correct) — structural cascade + the 25-yr
-  predictive/risk battery.
-- **TAQ** 30-min intraday — full-year 2019 (headline) + 2008/2015/2020 (regime robustness).
-- **Compustat** GICS sectors (residualization, cross-sector tests) + quarterly EPS (fundamentals).
-- **CBOE/WRDS** spot VIX (`cboe.cboe`) — implied-vol forecasting test.
+## 5. (folded into 6)
 
 ## 6. Results
 
-### 6.1 Positive: curvature is structurally distinct (H1) and cross-sector
-- top-K Jaccard vs correlation **≈ 0**; Spearman(F,|ρ|) **0.18** intraday / **0.07** daily (both
-  ≪ 0.8); plain Forman R²-on-degree **= 1.00** (calibration), augmented **0.56 / 0.18** (44–82%
-  non-degree). Robust across both horizons and 25 years; robust to residualization (orchestrator).
-- **Cross-sector:** ~99% of the network's triangles span sectors (≤1% within a single GICS sector)
-  → curvature highlights links a sector/correlation grouping cannot.
+### 6.1 Curvature is structurally distinct and cross-sector (H1)
+- top-K Jaccard vs correlation ≈ **0**; Spearman(F,|ρ|) **0.18 / 0.07** (intraday/daily); plain R²-on-
+  degree **= 1.00**, augmented **0.56 / 0.18**. Robust across horizons, 25 years, and residualizations.
+- **~99% of the network's triangles are cross-sector** (≤1% within a single GICS sector).
 
-### 6.2 Negative: no predictive/optimization edge (H2 + the application battery)
-- **Returns (H2):** OOS directional IC null intraday (CIs span 0); on the 25-yr daily walk-forward
-  curvature IC **−0.011** (CI < 0) vs correlation **+0.023** (CI > 0). Curvature *underperforms*.
-- **Volatility / fragility:** curvature tracks realized vol at **−0.78** (reproduces Sandhu/Samal)
-  but is **equivalent to correlation level** and **does not lead** (partial ≈ 0).
-- **VIX (implied vol):** tracks at −0.52 (worse than realized vol's +0.81 vs VIX); does **not lead**
-  VIX controlling current VIX (~0); faint sub-threshold hint (~0.10) at 10–21d.
-- **Battery (all partial-controlled, |corr| ≤ 0.16):** node-level stock risk, drawdowns, Δcurvature,
-  dispersion, leadership concentration, market-return timing, skew/kurtosis tail risk, contagion,
-  EPS earnings-risk, shock propagation, and **portfolio diversification** (structural diversification
-  is *worse* than correlation diversification). All null.
+### 6.2 ★ The positive result: curvature recovers real economic links
+- Curvature's cross-sector **bridges** (most-negative augmented Forman) are **enriched for real
+  customer–supplier links** (Compustat segments): top-300 bridges **3.7×, p = 0.006**; top-500
+  **2.6×, p = 0.019**. **Top-correlation pairs: 0×** — correlation captures no cross-sector economic
+  links (it picks within-sector co-movers).
+- Interpretation: curvature **discovers** economic linkages — *without* the disclosure data — that
+  correlation is structurally blind to.
 
-### 6.3 The unifying explanation: topology ⟂ covariance
-- Portfolio risk / diversification **is** the covariance matrix (= correlation); return prediction
-  is not topology. Standard financial objectives are covariance- or return-determined; curvature's
-  unique information is **topological** → orthogonal → cannot beat correlation at any of them by
-  construction. This single principle explains all 14 nulls.
+### 6.3 The limits: no edge on covariance/return objectives (14 targets)
+- Returns (H2): OOS IC null intraday; 25-yr daily walk-forward curvature −0.011 (CI<0) vs correlation
+  +0.023 (CI>0). Volatility: tracks (−0.78) but = correlation level, no lead. VIX: tracks (−0.52),
+  no lead. Battery (partial-controlled, |corr|≤0.16): node risk, drawdown, tail risk, contagion, EPS,
+  shock propagation, diversification, centrality premium, link momentum — all null.
+
+### 6.4 The principle: topology ⊥ covariance
+- Risk/diversification **is** the covariance matrix; returns are not topology. Standard objectives are
+  covariance/return-determined; curvature's information is topological → orthogonal → cannot improve
+  them by construction. One principle explains all fourteen nulls — and predicts the one place
+  curvature *does* win: recovering structure that is *economic*, not covariance (§6.2).
 
 ## 7. Discussion
-
-- **What curvature *is* good for:** *descriptive / structural* — mapping hidden cross-sector wiring,
-  flagging specific critical links for stress-testing, detecting structural regime change. It
-  answers "what is the structure?" not "optimize my return/risk."
-- **What it is *not*:** an alpha or risk-optimization input.
-- **Agentic-AI lesson:** the system's scientific value was **rigorous, self-skeptical filtering** —
-  it found a real structural result, exhaustively tested its uses, and *honestly bounded* it, with a
-  stop-rule against p-hacking. This is the capability agentic finance research most needs and least
-  demonstrates.
+- Curvature is a **structural-discovery instrument** — a microscope for hidden cross-sector economic
+  wiring — valuable where supply-chain disclosure is missing, lagged, or private; not a risk/return
+  optimizer. The negative results are not failures but a *characterization* of a fundamental limit.
 
 ## 8. Limitations & future work
+- Economic-link matching is coarse (free-text customer names → undercounts links); a resolved
+  supply-chain ID dataset would sharpen the enrichment estimate.
+- The directed line-graph / directed curvature-gap theory is open (Weber collaboration).
+- **Alpha path — tested, closed:** Cohen-Frazzini link momentum is weak even on *real* customer-
+  supplier links in our large-cap universe (+2.5%/yr, t=1.22 — the effect lives in under-covered
+  small-caps), and curvature's discovered links (3.7x-enriched but still sparse) capture less
+  (t=0.30). So the discovery does **not** translate to a tradeable signal here; curvature's
+  contribution is structural discovery, not alpha. A small-cap universe is the natural retest.
 
-- Intraday is 2019 (headline) + 3 regime years, not a 25-yr intraday panel (TAQ cost).
-- The line-graph / pair-community step is starved by triangle-sparsity; the **directed** line-graph
-  and directed curvature-gap theory are open (candidate Weber collaboration).
-- Curvature evaluated as a single object family; the agentic proposer is a bounded grid (an
-  LLM-in-the-loop proposer is the natural extension).
-- **Future:** (a) supply-chain *validation* — do curvature's cross-sector bridges match real
-  customer–supplier links (WRDS `comp.seg_customer`)? a genuinely *structural* (non-covariance) test;
-  (b) an LLM-proposer agent; (c) the descriptive systemic-risk monitoring product.
-
-## References  *(to expand to 20–25 for submission)*
-Sandhu et al. 2016; Samal et al. 2021; Forman 2003; Sreejith et al. 2016; Bennett-Cucuringu-Reinert
-2022; Cartea-Cucuringu-Jin 2023; Lu et al. 2025; Tian-Lubberts-Weber 2025; Fesser-Weber-Lambiotte
-2024; Ollivier 2009; + ICAIF agentic-AI line (LLM investment agents, TS-Agent, AAPM, FinRobot,
-multi-agent reflection).
+## References  *(expand to 20–25)*
+Sandhu 2016; Samal 2021; Forman 2003; Sreejith 2016; Bennett-Cucuringu-Reinert 2022;
+Cohen-Frazzini 2008; Ahern 2013; Cartea-Cucuringu-Jin 2023; Lu 2025; Tian-Lubberts-Weber 2025;
+Fesser-Weber-Lambiotte 2024; Ollivier 2009; + supply-chain centrality (2024).
