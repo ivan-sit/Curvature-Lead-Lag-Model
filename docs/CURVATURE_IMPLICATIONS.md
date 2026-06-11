@@ -60,3 +60,13 @@ Curvature's value is **descriptive / structural, not optimization**: mapping hid
 cross-sector wiring, flagging specific critical links for stress-testing, detecting
 structural regime change. It is a market-structure microscope, not an alpha or risk
 engine. (Tested across 13 targets; topology ⟂ covariance.) Stop here — more is p-hacking.
+
+## Round 5 — shock propagation + VIX (the professor's idea)
+- **Directed shock propagation** (does a big move in source s propagate to its laggers at t+1,
+  beyond correlation?): IC +0.002 even conditioning on 536k shock events. Null.
+- **VIX (implied vol; WRDS cboe.cboe, matches CBOE exactly):** curvature tracks VIX at -0.52
+  (worse than realized vol's +0.81), does NOT lead VIX controlling current VIX (partial ~0); a
+  faint sub-threshold hint (~0.10) at 10-21d after controlling VIX+rvol. Null/borderline — fits
+  topology ⟂ covariance (VIX is expectation/covariance-determined).
+
+Total: ~14 targets, one survivor (vol-tracking, = correlation). Conclusion unchanged.
