@@ -70,3 +70,18 @@ engine. (Tested across 13 targets; topology ⟂ covariance.) Stop here — more 
   topology ⟂ covariance (VIX is expectation/covariance-determined).
 
 Total: ~14 targets, one survivor (vol-tracking, = correlation). Conclusion unchanged.
+
+## Round 6 — THE POSITIVE RESULT: curvature recovers real economic links
+Curvature's cross-sector bridges (most-negative augmented Forman, residualized lead-lag) are
+ENRICHED for real customer-supplier links (comp.wrds_seg_customer), 221-name universe, 131 links:
+  top-300 bridges: 6 economic links vs 1.6 expected = 3.7x, **p=0.006 (significant)**
+  top-500 bridges: 7 vs 2.7 = 2.6x, p=0.019 (significant)
+  top-correlation pairs: 0x (correlation captures NO cross-sector economic links).
+
+**Reconciliation / the thesis:** topology ⟂ covariance => curvature can't beat correlation at
+risk/return (covariance objectives). BUT curvature's TOPOLOGY recovers ECONOMIC structure
+(supply-chain links) that correlation misses entirely (it picks within-sector co-movers; the real
+links are cross-sector, where the bridges live). Curvature is a structural-DISCOVERY tool, not a
+risk/return optimizer. This is the positive, non-covariance, ICAIF-anchor result.
+Caveat: absolute counts modest, name-matching coarse (undercounts links); enrichment direction is
+robust and significant at top-300/500.
