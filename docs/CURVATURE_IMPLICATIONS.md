@@ -120,3 +120,10 @@ Robust: (1) H1 structural distinctness (curvature != correlation/degree/undirect
 (2) topology ⟂ covariance — no edge across 14 covariance/return objectives. Everything else null,
 incl. the economic-link discovery (false positive). Curvature is a structural lens distinct from
 correlation but orthogonal to financial objectives. Honest, complete.
+
+## Round 10 — Sandhu extension on RAW returns (the fragility angle, done right)
+Undirected correlation curvature tracks vol at -0.76 (reproduces Sandhu/Samal). But the DIRECTED
+lead-lag curvature: tracks weaker (+0.42), does NOT lead the undirected curvature (partial -0.05 to
+-0.08), does NOT predict forward vol beyond vol+undirected (+0.01). => The directed/novel angle adds
+NOTHING to Sandhu's existing undirected result. The positive (curvature->fragility) is Sandhu's; our
+directed extension does not improve it. 19 tests; no novel positive from directedness.
