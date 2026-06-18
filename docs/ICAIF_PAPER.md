@@ -1,31 +1,31 @@
-# Curvature Sees What Correlation Cannot:
-## Directed Ricci Curvature Recovers Cross-Sector Economic Links in Equity Markets
+# Directed Curvature on Equity Lead-Lag Networks:
+## A Structural Lens and the Topology–Covariance Barrier
 
-*(ICAIF 2026 draft — math/structural-forward, positive-led. ACM `sigconf`, 8 pages. Deadline Aug 2.)*
+*(ICAIF 2026 draft — math/structural-forward, honest. ACM `sigconf`, 8 pages. Deadline Aug 2.)*
 
 ---
 
 ## Abstract  *(self-contained)*
 
 We introduce **CRISP** — directed, weighted, augmented **Forman–Ricci curvature** on
-**factor-residualized** equity **lead-lag networks** — and show it recovers **economic structure
-that correlation-based methods are structurally blind to.** On US equities (2000–2024, institutional
-WRDS data), curvature selects pairs that are statistically distinct from correlation-, degree-, and
-undirected-curvature selection (top-K Jaccard ≈ 0; Spearman(F,|ρ|) ≈ 0.1 ≪ 0.8), and that structure
-is **overwhelmingly cross-sector**. Our **central positive result:** the cross-sector pairs curvature
-flags as negatively-curved *bridges* are **significantly enriched for real customer–supplier links
-(3.7×, p = 0.006**, from Compustat segment disclosures**)**, while top-correlation pairs capture
-**essentially none** — because correlation favors *within*-sector co-movers, whereas genuine economic
-links span sectors, exactly where the bridges live. We then **characterize the limits:** across
-fourteen covariance- or return-determined objectives (directional return prediction, realized- and
-implied-volatility (VIX) forecasting, drawdown, tail risk, contagion, fundamentals, diversification),
-curvature adds **no edge beyond correlation**. We give the unifying principle — **topology ⊥
-covariance:** standard financial objectives are covariance-determined, so curvature's purely
-*topological* information cannot improve them. The conclusion is sharp and useful: **curvature's value
-is structural *discovery*, not optimization.** The application is a **real-time, disclosure-free,
-price-based instrument for mapping economic linkages** (e.g. supply chains) — surfacing, from returns
-alone, cross-sector relationships that segment disclosures report only quarterly, partially, and with
-a lag, and that correlation cannot see at all.
+**factor-residualized** equity **lead-lag networks** — and characterize, rigorously, what it can and
+cannot do for markets. **Robust finding 1 (structure):** curvature selects pairs that are
+statistically distinct from correlation-, degree-, and undirected-curvature selection (top-K Jaccard
+≈ 0; Spearman(F,|ρ|) ≈ 0.1 ≪ 0.8), and that structure is **overwhelmingly cross-sector** (≈99% of
+the network's triangles span GICS sectors) — relationships a sector- or correlation-based view is
+structurally blind to. **Robust finding 2 (a barrier):** across **fourteen** covariance- or
+return-determined objectives — directional return prediction, realized- and implied-volatility (VIX)
+forecasting, drawdown, tail risk, contagion, fundamentals, diversification, centrality premium, and
+economic-link momentum — curvature adds **no edge beyond correlation**, with every test
+partial-controlled. We explain this with a single principle, **topology ⊥ covariance:** standard
+financial objectives are covariance- or return-determined, whereas curvature's information is purely
+*topological*, so it cannot improve them by construction. **A suggestive lead (not yet robust):** in
+large-caps, curvature's cross-sector bridges are enriched for real customer–supplier links
+(3.7×, p = 0.006) while correlation captures none — but this **does not replicate** in a broad
+small/mid-cap universe, so we report it as a lead for future work, not a result. The contribution is
+a clean, honest map: **curvature is a structural lens distinct from correlation, but its information
+is orthogonal to the covariance/return objectives that finance optimizes — a microscope for market
+structure, not an alpha or risk engine.**
 
 ---
 
@@ -33,22 +33,24 @@ a lag, and that correlation cannot see at all.
 
 - **Question:** correlation networks are the standard lens on equity co-movement. Does the *geometry*
   of a *directed* network — who leads whom — encode structure correlation cannot?
-- **Answer (this paper):** yes, and specifically **economic** structure. Curvature's cross-sector
-  bridges recover **real customer–supplier links** that correlation never surfaces.
-- **Why it had been missed:** prior curvature-in-finance work (Sandhu 2016; Samal 2021) used
-  *undirected correlation* networks and aggregate fragility; we use *directed, residualized lead-lag*
-  networks and validate the structure against *external economic ground truth*.
+- **Answer (this paper):** it encodes genuine *structure* (cross-sector, distinct from correlation),
+  but that structure is **orthogonal to the covariance/return objectives finance optimizes** — so the
+  honest contribution is a precise *characterization*, not an alpha claim.
+- **Why prior framings differ:** curvature-in-finance work (Sandhu 2016; Samal 2021) used
+  *undirected correlation* networks for *aggregate fragility*; we use *directed, residualized lead-lag*
+  networks and test predictive/optimization use **exhaustively** (and honestly null).
 - **Contributions:**
   1. **CRISP**, a directed/weighted/augmented Forman-curvature object on residualized lead-lag
      networks (§4), with a clean four-object ablation.
   2. **Structural distinctness (H1):** curvature selection is near-disjoint from correlation/degree/
-     undirected (Jaccard ≈ 0) and cross-sector (§6.1).
-  3. **The positive result:** curvature bridges are **significantly enriched for real customer–
-     supplier links** (3.7×, p = 0.006); correlation pairs capture none (§6.2).
-  4. **A characterization of the limits + the principle:** topology ⊥ covariance explains why
-     curvature adds nothing to fourteen covariance/return objectives (§6.3–6.4).
-  5. *(Optional methodology note, §3):* the entire study was executed by an **autonomous research
-     agent** with a propose→test→reject loop and explicit anti-p-hacking discipline.
+     undirected (Jaccard ≈ 0) and cross-sector (§6.1) — robust across 25 years and two frequencies.
+  3. **The topology ⊥ covariance barrier:** across **fourteen** covariance/return objectives,
+     curvature adds nothing beyond correlation, with one principled explanation (§6.3–6.4).
+  4. **A suggestive (non-robust) lead:** large-cap curvature bridges are enriched for real customer–
+     supplier links (3.7×, p = 0.006) — but it **does not replicate** in small/mid-caps; reported as
+     future work, not a result (§6.2).
+  5. *(Optional methodology note, §3):* the study was executed by an **autonomous research agent**
+     with a propose→test→reject loop and explicit anti-p-hacking discipline.
 
 ## 2. Related work
 
@@ -95,7 +97,7 @@ CBOE/WRDS spot VIX (`cboe.cboe`).
   degree **= 1.00**, augmented **0.56 / 0.18**. Robust across horizons, 25 years, and residualizations.
 - **~99% of the network's triangles are cross-sector** (≤1% within a single GICS sector).
 
-### 6.2 ★ The positive result: curvature recovers real economic links
+### 6.2 A suggestive (non-robust) lead: economic-link enrichment in large-caps
 - Curvature's cross-sector **bridges** (most-negative augmented Forman) are **enriched for real
   customer–supplier links** (Compustat segments): top-300 bridges **3.7×, p = 0.006**; top-500
   **2.6×, p = 0.019**. **Top-correlation pairs: 0×** — correlation captures no cross-sector economic
@@ -119,9 +121,10 @@ CBOE/WRDS spot VIX (`cboe.cboe`).
   them by construction. One principle explains all fourteen nulls — and predicts the one place
   curvature *does* win: recovering structure that is *economic*, not covariance (§6.2).
 
-## 7. Application: price-based discovery of economic links  *(the practical contribution)*
+## 7. A potential application — *if* the economic-link lead is confirmed
 
-The deliverable is an instrument that **maps the market's economic wiring from prices alone** — no
+> Conditional on strengthening §6.2 (resolved supply-chain IDs, micro-caps): the lead points toward a
+> price-based instrument that would **map economic wiring from prices alone** — no
 fundamental disclosures required. This is useful precisely because the standard source of
 customer–supplier links (10-K segment disclosures / Compustat) is **quarterly, lagged, US-only, and
 incomplete** — only "major" customers (≳10% of sales) are reported. Curvature on price-based lead-lag
