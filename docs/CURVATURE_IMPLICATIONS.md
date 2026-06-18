@@ -94,3 +94,13 @@ Cohen-Frazzini link momentum (monthly, raw returns, 221-name universe):
 => No tradeable alpha: the underlying momentum is weak in large-caps AND curvature's discovery is
 too sparse to isolate it. Curvature's contribution = structural DISCOVERY (significant link
 recovery, p=0.006), NOT alpha. Final, consistent.
+
+## Round 8 — small/mid-cap retest: the discovery does NOT replicate
+Broad small/mid-cap universe (1290 names, 1182 real customer-supplier links):
+  enrichment: top-300 2.3x p=0.35, top-500 1.4x p=0.51, top-1000 0.7x p=0.76 (1 hit total) -- NULL
+  momentum: REAL links -0.2%/yr t=-0.14; curvature bridges -0.4%/yr t=-0.12 -- NULL
+=> The large-cap enrichment (3.7x, p=0.006, ~6 hits) is LARGE-CAP SPECIFIC and FRAGILE; it does not
+generalize. No link-momentum alpha (even on real links, because this universe is the most-liquid
+small/mid-caps, not the under-covered micro-caps where Cohen-Frazzini lives). HONEST status: the
+economic-link discovery is a SUGGESTIVE large-cap observation, not a robust result. Robust findings
+remain: H1 distinctness + topology ⟂ covariance.

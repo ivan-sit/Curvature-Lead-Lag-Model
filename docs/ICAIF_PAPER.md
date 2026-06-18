@@ -100,8 +100,12 @@ CBOE/WRDS spot VIX (`cboe.cboe`).
   customer–supplier links** (Compustat segments): top-300 bridges **3.7×, p = 0.006**; top-500
   **2.6×, p = 0.019**. **Top-correlation pairs: 0×** — correlation captures no cross-sector economic
   links (it picks within-sector co-movers).
-- Interpretation: curvature **discovers** economic linkages — *without* the disclosure data — that
-  correlation is structurally blind to.
+- Interpretation: in **large-caps**, curvature surfaces economic linkages — *without* disclosure data
+  — that correlation is structurally blind to. **Honest caveat (robustness):** this enrichment is
+  **large-cap-specific and fragile** — it rests on ~6 pairs and **does not replicate** in a broad
+  small/mid-cap universe (1 hit among 1,182 links; 2.3×, p=0.35). We therefore report it as a
+  **suggestive observation and a lead for future work** (resolved supply-chain IDs; micro-caps), not
+  a confident result. The robust contributions are H1 (§6.1) and topology ⊥ covariance (§6.4).
 
 ### 6.3 The limits: no edge on covariance/return objectives (14 targets)
 - Returns (H2): OOS IC null intraday; 25-yr daily walk-forward curvature −0.011 (CI<0) vs correlation
