@@ -19,10 +19,11 @@ forecasting, drawdown, tail risk, contagion, fundamentals, diversification, cent
 economic-link momentum — curvature adds **no edge beyond correlation**, with every test
 partial-controlled. We explain this with a single principle, **topology ⊥ covariance:** standard
 financial objectives are covariance- or return-determined, whereas curvature's information is purely
-*topological*, so it cannot improve them by construction. **A suggestive lead (not yet robust):** in
-large-caps, curvature's cross-sector bridges are enriched for real customer–supplier links
-(3.7×, p = 0.006) while correlation captures none — but this **does not replicate** in a broad
-small/mid-cap universe, so we report it as a lead for future work, not a result. The contribution is
+*topological*, so it cannot improve them by construction. **A cautionary methodological result:** an initial signal — curvature's
+bridges appearing enriched for customer–supplier links (3.7×, p = 0.006) under *fuzzy* name-matching —
+**vanished entirely under resolved entity IDs** (0×, p = 1, both large- and small-cap), exposing it as
+a name-matching artifact. Neither curvature nor correlation price-networks recover disclosed
+supply-chain links. We report this as a lesson on entity resolution and on self-skeptical validation. The contribution is
 a clean, honest map: **curvature is a structural lens distinct from correlation, but its information
 is orthogonal to the covariance/return objectives that finance optimizes — a microscope for market
 structure, not an alpha or risk engine.**
@@ -46,9 +47,9 @@ structure, not an alpha or risk engine.**
      undirected (Jaccard ≈ 0) and cross-sector (§6.1) — robust across 25 years and two frequencies.
   3. **The topology ⊥ covariance barrier:** across **fourteen** covariance/return objectives,
      curvature adds nothing beyond correlation, with one principled explanation (§6.3–6.4).
-  4. **A suggestive (non-robust) lead:** large-cap curvature bridges are enriched for real customer–
-     supplier links (3.7×, p = 0.006) — but it **does not replicate** in small/mid-caps; reported as
-     future work, not a result (§6.2).
+  4. **A cautionary false-positive:** a fuzzy-matched economic-link enrichment (3.7×, p = 0.006) that
+     **resolved-ID validation revealed as a name-matching artifact** (0×, p = 1) — a lesson on entity
+     resolution and self-skeptical validation (§6.2).
   5. *(Optional methodology note, §3):* the study was executed by an **autonomous research agent**
      with a propose→test→reject loop and explicit anti-p-hacking discipline.
 
@@ -97,17 +98,18 @@ CBOE/WRDS spot VIX (`cboe.cboe`).
   degree **= 1.00**, augmented **0.56 / 0.18**. Robust across horizons, 25 years, and residualizations.
 - **~99% of the network's triangles are cross-sector** (≤1% within a single GICS sector).
 
-### 6.2 A suggestive (non-robust) lead: economic-link enrichment in large-caps
-- Curvature's cross-sector **bridges** (most-negative augmented Forman) are **enriched for real
-  customer–supplier links** (Compustat segments): top-300 bridges **3.7×, p = 0.006**; top-500
-  **2.6×, p = 0.019**. **Top-correlation pairs: 0×** — correlation captures no cross-sector economic
-  links (it picks within-sector co-movers).
-- Interpretation: in **large-caps**, curvature surfaces economic linkages — *without* disclosure data
-  — that correlation is structurally blind to. **Honest caveat (robustness):** this enrichment is
-  **large-cap-specific and fragile** — it rests on ~6 pairs and **does not replicate** in a broad
-  small/mid-cap universe (1 hit among 1,182 links; 2.3×, p=0.35). We therefore report it as a
-  **suggestive observation and a lead for future work** (resolved supply-chain IDs; micro-caps), not
-  a confident result. The robust contributions are H1 (§6.1) and topology ⊥ covariance (§6.4).
+### 6.2 A false positive, caught by validation (a cautionary result)
+- Under *fuzzy* customer-name matching, curvature's cross-sector bridges appeared **enriched for real
+  customer–supplier links** (top-300 3.7×, p = 0.006) while correlation captured none — a tempting
+  "discovery."
+- **Resolved entity IDs kill it.** Re-run with `wrdsapps_link_supplychain.seglink` (`gvkey→cgvkey`,
+  no name matching): curvature top-300/500 = **0×, p = 1** in *both* large-cap (103 links) and
+  small/mid-cap (309 links); correlation also 0×. The enrichment was a **matching artifact**.
+- **Lesson:** (i) entity resolution is load-bearing for any link-validation claim; (ii) no price-based
+  network (curvature *or* correlation) recovers disclosed supply-chain links in its top structure;
+  (iii) the validation that caught this was triggered by demanding replication — a self-skeptical
+  discipline worth foregrounding (§3.5).
+
 
 ### 6.3 The limits: no edge on covariance/return objectives (14 targets)
 - Returns (H2): OOS IC null intraday; 25-yr daily walk-forward curvature −0.011 (CI<0) vs correlation

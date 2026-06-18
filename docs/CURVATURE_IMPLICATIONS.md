@@ -104,3 +104,19 @@ generalize. No link-momentum alpha (even on real links, because this universe is
 small/mid-caps, not the under-covered micro-caps where Cohen-Frazzini lives). HONEST status: the
 economic-link discovery is a SUGGESTIVE large-cap observation, not a robust result. Robust findings
 remain: H1 distinctness + topology ⟂ covariance.
+
+## Round 9 — FALSE POSITIVE: clean resolved links kill the enrichment
+Re-ran with RESOLVED supply-chain IDs (wrdsapps_link_supplychain.seglink: gvkey->cgvkey, no fuzzy
+name matching):
+  LARGE-CAP (103 clean links): curvature top-300/500 = 0 links, 0x, p=1 (top-1000 0.4x). corr also 0x.
+  SMALL-CAP (309 clean links): curvature top-300/500 = 0 links, 0x, p=1. corr also 0x.
+=> The earlier 3.7x/p=0.006 was a FUZZY-NAME-MATCHING ARTIFACT. With clean IDs there is NO enrichment;
+neither curvature nor correlation price-networks recover disclosed supply-chain links. Economic-link
+DISCOVERY is dead. Lesson: entity-resolution matters; the clean test (motivated by non-replication)
+caught a false positive before publication.
+
+## FINAL STANDING (after 18+ tests)
+Robust: (1) H1 structural distinctness (curvature != correlation/degree/undirected; cross-sector),
+(2) topology ⟂ covariance — no edge across 14 covariance/return objectives. Everything else null,
+incl. the economic-link discovery (false positive). Curvature is a structural lens distinct from
+correlation but orthogonal to financial objectives. Honest, complete.
